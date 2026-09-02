@@ -112,9 +112,9 @@ function script:handle_unix_passthrough {
 			}
 
 			if (Get-Command -Name $CommandName -ErrorAction Ignore) {
-				$currentPackages = $env:SUBF_AUTO_INSTALLED_PACKAGES -split ';' | Where-Object { $_ }
+				$currentPackages = $env:FOUNT_AUTO_INSTALLED_PACKAGES -split ';' | Where-Object { $_ }
 				if ($package -notin $currentPackages) {
-					$env:SUBF_AUTO_INSTALLED_PACKAGES = ($currentPackages + $package) -join ';'
+					$env:FOUNT_AUTO_INSTALLED_PACKAGES = ($currentPackages + $package) -join ';'
 				}
 				return $true
 			}

@@ -108,7 +108,7 @@ cleanup() {
 trap cleanup EXIT
 
 # 初始化自动安装的包列表
-SUBF_AUTO_INSTALLED_PACKAGES="${SUBF_AUTO_INSTALLED_PACKAGES:-}"
+FOUNT_AUTO_INSTALLED_PACKAGES="${FOUNT_AUTO_INSTALLED_PACKAGES:-}"
 
 # --- 包管理：main.sh 是 bash 脚本，用 bash 版 ---
 SUBF_PKG_STATE_DIR="${SUBF_PKG_STATE_DIR:-${TMPDIR:-${TEMP:-/tmp}}/subfount/package}"
@@ -244,10 +244,10 @@ install_package() {
 	done
 
 	if command -v "$command_name" &>/dev/null; then
-		if [[ ";$SUBF_AUTO_INSTALLED_PACKAGES;" != *";$installed_pkg_name;"* ]]; then
-			SUBF_AUTO_INSTALLED_PACKAGES="${SUBF_AUTO_INSTALLED_PACKAGES:+$SUBF_AUTO_INSTALLED_PACKAGES;}$installed_pkg_name"
+		if [[ ";$FOUNT_AUTO_INSTALLED_PACKAGES;" != *";$installed_pkg_name;"* ]]; then
+			FOUNT_AUTO_INSTALLED_PACKAGES="${FOUNT_AUTO_INSTALLED_PACKAGES:+$FOUNT_AUTO_INSTALLED_PACKAGES;}$installed_pkg_name"
 		fi
-		export SUBF_AUTO_INSTALLED_PACKAGES
+		export FOUNT_AUTO_INSTALLED_PACKAGES
 		return 0
 	else
 		echo -e "${C_RED}Error: $command_name installation failed.${C_RESET}" >&2
