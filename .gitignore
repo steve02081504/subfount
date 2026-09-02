@@ -9,6 +9,9 @@ deno.lock
 # Runtime data (config / daemon pid / status)
 data/
 
+# Compiled runner
+subfount.exe
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,4 +1,5 @@
 ﻿#!pwsh
+#_pragma title "subfount"
 # subfount irm|iex 引导器
 # 用法: irm <url> | iex
 # 安装 subfount 到 SUBF_DIR，自更新引导器后转发给 run.bat。
@@ -310,15 +311,26 @@ try {
 	try { Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force -ErrorAction Ignore }
 	catch { <# ignore #> }
 
-	# 仅当脚本来自可写文件时才执行自更新；例如 IEX/curl 管道执行时 $PSCommandPath 可能为空。
-	if ($canSelfModify) {
-		$sourceFile = "$Script:subfountDir/src/runner/main.ps1"
-		if ((Get-FileHash -LiteralPath $PSCommandPath).Hash -ne (Get-FileHash -LiteralPath $sourceFile).Hash) {
-			Write-Host (Get-I18n -key 'install.runnerUpdating')
-			try { Copy-Item -LiteralPath $sourceFile -Destination $PSCommandPath -Force }
-			catch { <# 文件无写权限时静默跳过 #> }
+	#_if PSEXE
+		#_!! if (Test-Path "${PSCommandPath}.old") {
+			#_!! Remove-Item "${PSCommandPath}.old"
+		#_!! }
+		#_!! $(if ((Get-Command ps12exe -ErrorAction Ignore) -and ($PSEXEscript -ne (ps12exe -inputFile "$Script:subfountDir/src/runner/main.ps1" -PreprocessOnly))) {
+			#_!! Write-Host (Get-I18n -key 'install.runnerUpdating')
+			#_!! Move-Item "$PSCommandPath" "${PSCommandPath}.old"
+			#_!! & "$Script:subfountDir/run.bat" geneexe "$PSCommandPath"
+		#_!! }) 6> $null
+	#_else
+		# 仅当脚本来自可写文件时才执行自更新；例如 IEX/curl 管道执行时 $PSCommandPath 可能为空。
+		if ($canSelfModify) {
+			$sourceFile = "$Script:subfountDir/src/runner/main.ps1"
+			if ((Get-FileHash -LiteralPath $PSCommandPath).Hash -ne (Get-FileHash -LiteralPath $sourceFile).Hash) {
+				Write-Host (Get-I18n -key 'install.runnerUpdating')
+				try { Copy-Item -LiteralPath $sourceFile -Destination $PSCommandPath -Force }
+				catch { <# 文件无写权限时静默跳过 #> }
+			}
 		}
-	}
+	#_endif
 	$OutputEncoding = [console]::OutputEncoding = [System.Text.Encoding]::UTF8
 	& "$Script:subfountDir/run.bat" @forwardedArgs
 	$subfountExitCode = $LastExitCode
@@ -327,7 +339,16 @@ finally {
 	Write-TaskbarProgressClear
 }
 
-if (($args[0] -eq 'remove') -and $canSelfModify) {
-	Remove-Item -LiteralPath $PSCommandPath -Force
-}
+#_if PSEXE
+	#_!! if (Test-Path "${PSCommandPath}.old") {
+		#_!! Start-Process powerShell @("-NoProfile";"-c";"sleep 1;Remove-Item `"${PSCommandPath}.old`"") -WindowStyle Hidden
+	#_!! }
+	#_!! if ($args[0] -eq 'remove') {
+		#_balus $subfountExitCode
+	#_!! }
+#_else
+	if (($args[0] -eq 'remove') -and $canSelfModify) {
+		Remove-Item -LiteralPath $PSCommandPath -Force
+	}
+#_endif
 exit $subfountExitCode
