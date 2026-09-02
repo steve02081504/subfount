@@ -72,7 +72,7 @@ let p2p
 try {
 	; ({ on_shutdown } = await import('npm:on-shutdown'))
 	p2p = await import('npm:@steve02081504/fount-p2p')
-	await p2p.startNode({ nodeDir: path.join(__dirname, '..', '.fount-p2p-node') })
+	await p2p.startNode({ nodeDir: path.join(getDataDir(), 'p2p') })
 }
 catch (error) {
 	console.error('\nFailed to load dependencies:', error.message)

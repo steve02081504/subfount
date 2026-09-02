@@ -4,7 +4,7 @@ node_modules/
 deno.lock
 
 # P2P node data
-.fount-p2p-node/
+data/p2p/
 
 # Runtime data (config / daemon pid / status)
 data/
