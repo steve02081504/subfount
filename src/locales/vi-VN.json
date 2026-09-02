@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Bảng cấu hình Subfount",
+		"chooseAction": "Chọn một hành động",
+		"menu": {
+			"connection": "Cài đặt kết nối",
+			"infra": "Bật/tắt tham gia infra",
+			"status": "Xem trạng thái daemon",
+			"start": "Khởi động daemon",
+			"stop": "Dừng daemon",
+			"exit": "Thoát"
+		},
+		"roomId": "ID phòng máy chủ (mã kết nối, để trống = chỉ infra):",
+		"password": "Mật khẩu máy chủ:",
+		"nodeHash": "nodeHash máy chủ (tùy chọn, từ API mã kết nối):",
+		"saved": "Đã lưu cấu hình.",
+		"infraToggle": "Bật tham gia infra?",
+		"infraSet": "Đã đặt tham gia infra thành ${value}.",
+		"on": "bật",
+		"off": "tắt",
+		"alreadyRunning": "Daemon đang chạy (pid ${pid}).",
+		"startingDaemon": "Đang khởi động daemon...",
+		"startFailed": "Không khởi động được daemon: ${error}",
+		"notRunning": "Daemon không chạy.",
+		"stoppingDaemon": "Đang dừng daemon (pid ${pid})...",
+		"stopFailed": "Không dừng được daemon.",
+		"status": {
+			"daemon": "Daemon: ${state}",
+			"running": "đang chạy",
+			"stopped": "đã dừng",
+			"pid": "PID: ${pid}",
+			"nodeHash": "nodeHash cục bộ: ${hash}",
+			"mode": "Chế độ: ${mode}",
+			"host": "worker máy chủ",
+			"infra": "chỉ infra",
+			"connected": "Máy chủ đã kết nối: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "Trạng thái cập nhật: ${time}"
+		},
+		"pressEnter": "Nhấn Enter để tiếp tục..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Đang dọn bộ nhớ cache Deno...",
+			"removingCaches": "Đang xóa tệp cache..."
+		},
+		"deno": {
+			"installFailedFallback": "Bộ cài đặt chính thức thất bại, chuyển sang tệp zip bản phát hành GitHub...",
+			"installingTermux": "Đang cài Deno cho Termux...",
+			"isRequired": "Lỗi: cài deno thất bại. Vui lòng cài thủ công.",
+			"managedUpgradeFailed": "Nâng cấp Deno qua ${manager} thất bại (gói ${package}).",
+			"missing": "Thiếu Deno, đang tự cài...",
+			"notWorking": "Deno không hoạt động.",
+			"patchFailed": "Không vá được Deno cho Termux.",
+			"patchMissing": "Không vá được Deno: không tìm thấy tệp nhị phân deno.",
+			"patchUnsupportedArch": "Kiến trúc không hỗ trợ vá Termux: ${arch}",
+			"pinNotHonored": "Phiên bản Deno không khớp thông số kỹ thuật đã ghim ${spec} (nâng cấp qua ${manager}).",
+			"upgradeFailed": "Nâng cấp Deno thất bại.",
+			"upgradeFailedTermux": "Nâng cấp Deno trên Termux thất bại; đang cài lại..."
+		},
+		"git": {
+			"alreadyUpToDate": "Đã là mới nhất.",
+			"backupSavedTo": "Đã sao lưu thay đổi cục bộ vào ${path}",
+			"branchesDiverged": "Nhánh cục bộ và từ xa đã phân kỳ.",
+			"dirtyWorkingDirectory": "Thư mục làm việc có thay đổi chưa commit.",
+			"fetchFailed": "Không tìm nạp được từ remote.",
+			"fetchFailedSkippingUpdate": "Tìm nạp thất bại; bỏ qua tự cập nhật.",
+			"fetchingAndResetting": "Đang tìm nạp và đặt lại về trạng thái remote...",
+			"installFailedManual": "Cài git thất bại. Vui lòng cài thủ công.",
+			"installFailedWinget": "Cài git qua winget thất bại.",
+			"localBranchAhead": "Nhánh cục bộ đang đi trước remote.",
+			"localChangesDetected": "Đã phát hiện thay đổi cục bộ.",
+			"notInstalled": "git chưa được cài đặt.",
+			"notInstalledSkippingPull": "git chưa được cài; bỏ qua pull.",
+			"notOnBranch": "Không nằm trên nhánh nào (HEAD tách rời).",
+			"noUpstreamBranch": "Chưa cấu hình nhánh upstream.",
+			"remoteRefUnavailable": "Tham chiếu remote ${ref} không khả dụng.",
+			"repoNotFound": "Không tìm thấy kho lưu trữ.",
+			"updatingFromRemote": "Đang cập nhật từ remote...",
+			"upstreamGoneFallbackMaster": "Nhánh upstream không còn; chuyển sang master."
+		},
+		"install": {
+			"browserMissing": "Không tìm thấy trình duyệt; đang cài Chrome...",
+			"installingDependencies": "Đang cài các phụ thuộc...",
+			"permissionDeniedAsRoot": "Từ chối quyền truy cập ${path}. Không nên chạy với quyền root.",
+			"permissionDeniedNotRoot": "Từ chối quyền truy cập ${path}. Kiểm tra chủ sở hữu/quyền.",
+			"rootWarningAsRoot": "Bạn đang chạy với quyền root.",
+			"rootWarningPreferUser": "Nên chạy với người dùng thường.",
+			"runnerUpdating": "Đang cập nhật trình chạy subfount...",
+			"untrustedPartsWarning": "Cảnh báo: quá trình cài đặt này có thể chạy mã từ nguồn không đáng tin cậy."
+		},
+		"keepalive": {
+			"autoInitDisabled": "Tự khởi tạo lại bị tắt (có .noautoinit); thoát.",
+			"failedToStart": "Không khởi động được daemon nhiều lần; bỏ cuộc.",
+			"initComplete": "Khởi tạo lại hoàn tất.",
+			"initFailed": "Khởi tạo lại thất bại.",
+			"restartingTooFast": "Daemon khởi động lại quá nhanh; đang khởi tạo lại..."
+		},
+		"remove": {
+			"aborted": "Đã hủy gỡ bỏ.",
+			"confirmPrompt": "Thao tác này sẽ gỡ subfount khỏi ${path}. Tiếp tục?",
+			"externalMountWarning": "Cảnh báo: ${path} nằm trên mount ngoài/dùng chung (${target}). Gỡ bỏ sẽ xóa bản sao trên máy thật.",
+			"nonInteractiveRequiresForce": "Gỡ bỏ không tương tác. Dùng `subfount remove --force`.",
+			"remove": {
+				"denoFailed": "Gỡ deno thất bại: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "Đang gỡ các gói hệ thống tự cài...",
+				"subfount": {
+					"fromGitSafeDir": "Đang gỡ subfount khỏi safe.directory của git...",
+					"fromPath": "Đang gỡ subfount khỏi PATH...",
+					"installationDir": "Đang xóa thư mục cài đặt subfount...",
+					"main": "Đang dừng daemon và dọn bộ nhớ cache Deno..."
+				}
+			},
+			"subfountInstallationDirRemoved": "Đã xóa thư mục cài đặt subfount.",
+			"subfountUninstallationComplete": "Đã gỡ cài đặt subfount xong.",
+			"uninstalling": {
+				"chrome": "Đang gỡ Chrome...",
+				"deno": "Đang gỡ Deno...",
+				"git": "Đang gỡ git...",
+				"winget": "Đang gỡ winget..."
+			},
+			"yn": "Xác nhận? (y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "Đang dừng daemon...",
+			"complete": "Đã dừng daemon."
+		},
+		"tempDir": {
+			"blocked": "subfount được cài trong thư mục tạm và không thể chạy tại đây. Di chuyển đến vị trí cố định, rồi chạy `subfount remove` để gỡ cài đặt."
+		},
+		"update": {
+			"createdNoUpdate": "Đã tạo .noupdate; tạm dừng tự cập nhật.",
+			"pinningToCommit": "Đang ghim vào commit ${ref}...",
+			"pinningToPullRequest": "Đang ghim vào pull request #${ref}...",
+			"removedNoUpdate": "Đã xóa .noupdate; tiếp tục tự cập nhật.",
+			"skippingSubfountUpdate": "Tự cập nhật đang tạm dừng (.noupdate); bỏ qua.",
+			"switchingToBranch": "Đang chuyển sang nhánh ${ref}...",
+			"switchingToRemote": "Đang chuyển origin sang ${ref}...",
+			"unknownTarget": "Mục tiêu cập nhật không xác định: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "Tự cập nhật đang tạm dừng (có .noupdate).",
+			"branch": {
+				"detached": "tách rời",
+				"title": "Nhánh: ${branch}"
+			},
+			"commit": "Commit: ${ref}",
+			"noGit": "git chưa được cài đặt.",
+			"noRepo": "Không phải kho git.",
+			"remote": "Remote: ${ref}",
+			"status": {
+				"title": "Trạng thái: ${status}",
+				"upToDate": "mới nhất",
+				"behind": "chậm hơn remote (có bản cập nhật)",
+				"ahead": "nhanh hơn remote",
+				"diverged": "phân kỳ với remote",
+				"fetchFailed": "không tìm nạp được",
+				"detachedNoCompare": "tách rời (không so sánh remote)"
+			}
+		}
+	}
+}

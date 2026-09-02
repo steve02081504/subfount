@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Панель конфигурации Subfount",
+		"chooseAction": "Выберите действие",
+		"menu": {
+			"connection": "Настройки подключения",
+			"infra": "Переключение участия в infra",
+			"status": "Показать состояние демона",
+			"start": "Запустить демон",
+			"stop": "Остановить демон",
+			"exit": "Выход"
+		},
+		"roomId": "ID комнаты хоста (код подключения, пусто = только infra):",
+		"password": "Пароль хоста:",
+		"nodeHash": "nodeHash хоста (необязательно, из API кода подключения):",
+		"saved": "Конфигурация сохранена.",
+		"infraToggle": "Включить участие в infra?",
+		"infraSet": "Участие в infra установлено: ${value}.",
+		"on": "включено",
+		"off": "выключено",
+		"alreadyRunning": "Демон уже запущен (pid ${pid}).",
+		"startingDaemon": "Запуск демона...",
+		"startFailed": "Не удалось запустить демон: ${error}",
+		"notRunning": "Демон не запущен.",
+		"stoppingDaemon": "Остановка демона (pid ${pid})...",
+		"stopFailed": "Не удалось остановить демон.",
+		"status": {
+			"daemon": "Демон: ${state}",
+			"running": "запущен",
+			"stopped": "остановлен",
+			"pid": "PID: ${pid}",
+			"nodeHash": "Локальный nodeHash: ${hash}",
+			"mode": "Режим: ${mode}",
+			"host": "рабочий узел хоста",
+			"infra": "только infra",
+			"connected": "Подключённый хост: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "Состояние обновлено: ${time}"
+		},
+		"pressEnter": "Нажмите Enter для продолжения..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Очистка кешей Deno...",
+			"removingCaches": "Удаление файлов кеша..."
+		},
+		"deno": {
+			"installFailedFallback": "Официальный установщик не сработал, переход на zip-архив релиза GitHub...",
+			"installingTermux": "Установка Deno для Termux...",
+			"isRequired": "Ошибка: не удалось установить deno. Установите его вручную.",
+			"managedUpgradeFailed": "Обновление Deno через ${manager} не удалось (пакет ${package}).",
+			"missing": "Deno отсутствует, автоматическая установка...",
+			"notWorking": "Deno не работает.",
+			"patchFailed": "Не удалось пропатчить Deno для Termux.",
+			"patchMissing": "Невозможно пропатчить Deno: бинарный файл deno не найден.",
+			"patchUnsupportedArch": "Неподдерживаемая архитектура для патча Termux: ${arch}",
+			"pinNotHonored": "Версия Deno не соответствует зафиксированной спецификации ${spec} (обновлено через ${manager}).",
+			"upgradeFailed": "Обновление Deno не удалось.",
+			"upgradeFailedTermux": "Обновление Deno в Termux не удалось; переустановка..."
+		},
+		"git": {
+			"alreadyUpToDate": "Уже актуально.",
+			"backupSavedTo": "Локальные изменения сохранены в ${path}",
+			"branchesDiverged": "Локальная и удалённая ветки разошлись.",
+			"dirtyWorkingDirectory": "В рабочем каталоге есть незакоммиченные изменения.",
+			"fetchFailed": "Не удалось получить данные с удалённого репозитория.",
+			"fetchFailedSkippingUpdate": "Не удалось получить данные; автообновление пропущено.",
+			"fetchingAndResetting": "Получение и сброс к состоянию удалённого репозитория...",
+			"installFailedManual": "Не удалось установить git. Установите его вручную.",
+			"installFailedWinget": "Не удалось установить git через winget.",
+			"localBranchAhead": "Локальная ветка опережает удалённую.",
+			"localChangesDetected": "Обнаружены локальные изменения.",
+			"notInstalled": "git не установлен.",
+			"notInstalledSkippingPull": "git не установлен; pull пропущен.",
+			"notOnBranch": "Не на ветке (отделённый HEAD).",
+			"noUpstreamBranch": "Не настроена восходящая ветка.",
+			"remoteRefUnavailable": "Удалённая ссылка ${ref} недоступна.",
+			"repoNotFound": "Репозиторий не найден.",
+			"updatingFromRemote": "Обновление из удалённого репозитория...",
+			"upstreamGoneFallbackMaster": "Восходящая ветка исчезла; переход на master."
+		},
+		"install": {
+			"browserMissing": "Браузер не найден; установка Chrome...",
+			"installingDependencies": "Установка зависимостей...",
+			"permissionDeniedAsRoot": "Отказано в доступе к ${path}. Запуск от имени root не рекомендуется.",
+			"permissionDeniedNotRoot": "Отказано в доступе к ${path}. Проверьте владельца/права.",
+			"rootWarningAsRoot": "Вы работаете от имени root.",
+			"rootWarningPreferUser": "Рекомендуется работать от имени обычного пользователя.",
+			"runnerUpdating": "Обновление загрузчика subfount...",
+			"untrustedPartsWarning": "Внимание: эта установка может выполнять код из ненадёжных источников."
+		},
+		"keepalive": {
+			"autoInitDisabled": "Автоматическая повторная инициализация отключена (есть .noautoinit); выход.",
+			"failedToStart": "Демон неоднократно не запускался; сдаёмся.",
+			"initComplete": "Повторная инициализация завершена.",
+			"initFailed": "Повторная инициализация не удалась.",
+			"restartingTooFast": "Демон перезапускается слишком быстро; повторная инициализация..."
+		},
+		"remove": {
+			"aborted": "Удаление отменено.",
+			"confirmPrompt": "Это удалит subfount из ${path}. Продолжить?",
+			"externalMountWarning": "Внимание: ${path} находится на внешнем/общем монтировании (${target}). Удаление уничтожит копию на реальной машине.",
+			"nonInteractiveRequiresForce": "Удаление неинтерактивно. Используйте `subfount remove --force`.",
+			"remove": {
+				"denoFailed": "Не удалось удалить deno: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "Удаление автоматически установленных системных пакетов...",
+				"subfount": {
+					"fromGitSafeDir": "Удаление subfount из git safe.directory...",
+					"fromPath": "Удаление subfount из PATH...",
+					"installationDir": "Удаление каталога установки subfount...",
+					"main": "Остановка демона и очистка кешей Deno..."
+				}
+			},
+			"subfountInstallationDirRemoved": "Каталог установки subfount удалён.",
+			"subfountUninstallationComplete": "Деинсталляция subfount завершена.",
+			"uninstalling": {
+				"chrome": "Удаление Chrome...",
+				"deno": "Удаление Deno...",
+				"git": "Удаление git...",
+				"winget": "Удаление winget..."
+			},
+			"yn": "Подтвердить? (д/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "Остановка демона...",
+			"complete": "Демон остановлен."
+		},
+		"tempDir": {
+			"blocked": "subfount установлен во временном каталоге и не может здесь работать. Переместите его в постоянное место, затем выполните `subfount remove` для удаления."
+		},
+		"update": {
+			"createdNoUpdate": "Создан .noupdate; автообновления приостановлены.",
+			"pinningToCommit": "Фиксация на коммит ${ref}...",
+			"pinningToPullRequest": "Фиксация на pull request #${ref}...",
+			"removedNoUpdate": "Удалён .noupdate; автообновления возобновлены.",
+			"skippingSubfountUpdate": "Автообновление приостановлено (.noupdate); пропуск.",
+			"switchingToBranch": "Переключение на ветку ${ref}...",
+			"switchingToRemote": "Переключение origin на ${ref}...",
+			"unknownTarget": "Неизвестная цель обновления: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "Автообновление приостановлено (есть .noupdate).",
+			"branch": {
+				"detached": "отделён",
+				"title": "Ветка: ${branch}"
+			},
+			"commit": "Коммит: ${ref}",
+			"noGit": "git не установлен.",
+			"noRepo": "Не git-репозиторий.",
+			"remote": "Удалённый: ${ref}",
+			"status": {
+				"title": "Статус: ${status}",
+				"upToDate": "актуален",
+				"behind": "отстаёт от удалённого (доступно обновление)",
+				"ahead": "опережает удалённый",
+				"diverged": "разошёлся с удалённым",
+				"fetchFailed": "не удалось получить",
+				"detachedNoCompare": "отделён (сравнение с удалённым невозможно)"
+			}
+		}
+	}
+}

@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount-Konfigurationspanel",
+		"chooseAction": "Aktion auswählen",
+		"menu": {
+			"connection": "Verbindungseinstellungen",
+			"infra": "Infra-Teilnahme umschalten",
+			"status": "Daemon-Status anzeigen",
+			"start": "Daemon starten",
+			"stop": "Daemon stoppen",
+			"exit": "Beenden"
+		},
+		"roomId": "Host-Raum-ID (Verbindungscode, leer = nur Infra):",
+		"password": "Host-Passwort:",
+		"nodeHash": "Host-nodeHash (optional, aus der Verbindungscode-API):",
+		"saved": "Konfiguration gespeichert.",
+		"infraToggle": "Infra-Teilnahme aktivieren?",
+		"infraSet": "Infra-Teilnahme auf ${value} gesetzt.",
+		"on": "aktiviert",
+		"off": "deaktiviert",
+		"alreadyRunning": "Der Daemon läuft bereits (pid ${pid}).",
+		"startingDaemon": "Daemon wird gestartet...",
+		"startFailed": "Daemon konnte nicht gestartet werden: ${error}",
+		"notRunning": "Der Daemon läuft nicht.",
+		"stoppingDaemon": "Daemon wird gestoppt (pid ${pid})...",
+		"stopFailed": "Daemon konnte nicht gestoppt werden.",
+		"status": {
+			"daemon": "Daemon: ${state}",
+			"running": "läuft",
+			"stopped": "gestoppt",
+			"pid": "PID: ${pid}",
+			"nodeHash": "Lokaler nodeHash: ${hash}",
+			"mode": "Modus: ${mode}",
+			"host": "Host-Worker",
+			"infra": "nur Infra",
+			"connected": "Verbundener Host: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "Status aktualisiert: ${time}"
+		},
+		"pressEnter": "Drücken Sie die Eingabetaste, um fortzufahren..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Deno-Caches werden bereinigt...",
+			"removingCaches": "Cache-Dateien werden entfernt..."
+		},
+		"deno": {
+			"installFailedFallback": "Offizieller Installer fehlgeschlagen, Rückgriff auf das GitHub-Release-ZIP...",
+			"installingTermux": "Deno für Termux wird installiert...",
+			"isRequired": "Fehler: Installation von deno fehlgeschlagen. Bitte installieren Sie es manuell.",
+			"managedUpgradeFailed": "Deno-Upgrade über ${manager} fehlgeschlagen (Paket ${package}).",
+			"missing": "Deno fehlt, wird automatisch installiert...",
+			"notWorking": "Deno funktioniert nicht.",
+			"patchFailed": "Fehler beim Patchen von Deno für Termux.",
+			"patchMissing": "Deno kann nicht gepatcht werden: deno-Binärdatei nicht gefunden.",
+			"patchUnsupportedArch": "Nicht unterstützte Architektur für Termux-Patching: ${arch}",
+			"pinNotHonored": "Deno-Version entspricht nicht der festgelegten Spezifikation ${spec} (aktualisiert über ${manager}).",
+			"upgradeFailed": "Deno-Upgrade fehlgeschlagen.",
+			"upgradeFailedTermux": "Deno-Upgrade auf Termux fehlgeschlagen; Neuinstallation..."
+		},
+		"git": {
+			"alreadyUpToDate": "Bereits auf dem neuesten Stand.",
+			"backupSavedTo": "Lokale Änderungen unter ${path} gesichert",
+			"branchesDiverged": "Lokale und entfernte Zweige haben sich getrennt.",
+			"dirtyWorkingDirectory": "Das Arbeitsverzeichnis enthält nicht committete Änderungen.",
+			"fetchFailed": "Abruf vom Remote fehlgeschlagen.",
+			"fetchFailedSkippingUpdate": "Abruf fehlgeschlagen; automatisches Update übersprungen.",
+			"fetchingAndResetting": "Abrufen und Zurücksetzen auf den Remote-Stand...",
+			"installFailedManual": "Installation von git fehlgeschlagen. Bitte installieren Sie es manuell.",
+			"installFailedWinget": "Installation von git über winget fehlgeschlagen.",
+			"localBranchAhead": "Lokaler Zweig ist dem Remote voraus.",
+			"localChangesDetected": "Lokale Änderungen erkannt.",
+			"notInstalled": "git ist nicht installiert.",
+			"notInstalledSkippingPull": "git ist nicht installiert; Pull übersprungen.",
+			"notOnBranch": "Nicht auf einem Zweig (losgelöster HEAD).",
+			"noUpstreamBranch": "Kein Upstream-Zweig konfiguriert.",
+			"remoteRefUnavailable": "Remote-Referenz ${ref} nicht verfügbar.",
+			"repoNotFound": "Repository nicht gefunden.",
+			"updatingFromRemote": "Aktualisierung vom Remote...",
+			"upstreamGoneFallbackMaster": "Upstream-Zweig ist verschwunden; Rückgriff auf master."
+		},
+		"install": {
+			"browserMissing": "Kein Browser gefunden; Chrome wird installiert...",
+			"installingDependencies": "Abhängigkeiten werden installiert...",
+			"permissionDeniedAsRoot": "Zugriff für ${path} verweigert. Die Ausführung als root wird nicht empfohlen.",
+			"permissionDeniedNotRoot": "Zugriff für ${path} verweigert. Prüfen Sie Besitzer/Berechtigungen.",
+			"rootWarningAsRoot": "Sie führen als root aus.",
+			"rootWarningPreferUser": "Es wird empfohlen, als normaler Benutzer auszuführen.",
+			"runnerUpdating": "Subfount-Starter wird aktualisiert...",
+			"untrustedPartsWarning": "Warnung: Diese Installation kann Code aus nicht vertrauenswürdigen Quellen ausführen."
+		},
+		"keepalive": {
+			"autoInitDisabled": "Automatische Reinitialisierung deaktiviert (.noautoinit vorhanden); wird beendet.",
+			"failedToStart": "Der Daemon konnte wiederholt nicht gestartet werden; aufgeben.",
+			"initComplete": "Reinitialisierung abgeschlossen.",
+			"initFailed": "Reinitialisierung fehlgeschlagen.",
+			"restartingTooFast": "Daemon startet zu schnell neu; Reinitialisierung..."
+		},
+		"remove": {
+			"aborted": "Entfernung abgebrochen.",
+			"confirmPrompt": "Dadurch wird subfount von ${path} entfernt. Fortfahren?",
+			"externalMountWarning": "Warnung: ${path} liegt auf einem externen/freigegebenen Mount (${target}). Das Entfernen löscht die Kopie auf der echten Maschine.",
+			"nonInteractiveRequiresForce": "Das Entfernen ist nicht interaktiv. Verwenden Sie `subfount remove --force`.",
+			"remove": {
+				"denoFailed": "Deinstallation von deno fehlgeschlagen: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "Automatisch installierte Systempakete werden entfernt...",
+				"subfount": {
+					"fromGitSafeDir": "subfount wird aus dem git safe.directory entfernt...",
+					"fromPath": "subfount wird aus dem PATH entfernt...",
+					"installationDir": "Subfount-Installationsverzeichnis wird entfernt...",
+					"main": "Daemon wird gestoppt und Deno-Caches werden bereinigt..."
+				}
+			},
+			"subfountInstallationDirRemoved": "Subfount-Installationsverzeichnis entfernt.",
+			"subfountUninstallationComplete": "Deinstallation von subfount abgeschlossen.",
+			"uninstalling": {
+				"chrome": "Chrome wird deinstalliert...",
+				"deno": "Deno wird deinstalliert...",
+				"git": "git wird deinstalliert...",
+				"winget": "winget wird deinstalliert..."
+			},
+			"yn": "Bestätigen? (j/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "Daemon wird gestoppt...",
+			"complete": "Daemon gestoppt."
+		},
+		"tempDir": {
+			"blocked": "subfount ist in einem temporären Verzeichnis installiert und kann hier nicht ausgeführt werden. Verschieben Sie es an einen dauerhaften Ort und führen Sie dann `subfount remove` zum Deinstallieren aus."
+		},
+		"update": {
+			"createdNoUpdate": ".noupdate erstellt; automatische Updates sind angehalten.",
+			"pinningToCommit": "Auf Commit ${ref} festlegen...",
+			"pinningToPullRequest": "Auf Pull-Request #${ref} festlegen...",
+			"removedNoUpdate": ".noupdate entfernt; automatische Updates fortgesetzt.",
+			"skippingSubfountUpdate": "Automatisches Update angehalten (.noupdate); übersprungen.",
+			"switchingToBranch": "Wechsel zu Zweig ${ref}...",
+			"switchingToRemote": "origin auf ${ref} umstellen...",
+			"unknownTarget": "Unbekanntes Update-Ziel: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "Automatisches Update angehalten (.noupdate vorhanden).",
+			"branch": {
+				"detached": "losgelöst",
+				"title": "Zweig: ${branch}"
+			},
+			"commit": "Commit: ${ref}",
+			"noGit": "git ist nicht installiert.",
+			"noRepo": "Kein git-Repository.",
+			"remote": "Remote: ${ref}",
+			"status": {
+				"title": "Status: ${status}",
+				"upToDate": "auf dem neuesten Stand",
+				"behind": "hinter dem Remote (Update verfügbar)",
+				"ahead": "dem Remote voraus",
+				"diverged": "vom Remote getrennt",
+				"fetchFailed": "Abruf fehlgeschlagen",
+				"detachedNoCompare": "losgelöst (kein Remote-Vergleich)"
+			}
+		}
+	}
+}

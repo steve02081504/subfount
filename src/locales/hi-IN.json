@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount कॉन्फ़िगरेशन पैनल",
+		"chooseAction": "कोई कार्रवाई चुनें",
+		"menu": {
+			"connection": "कनेक्शन सेटिंग्स",
+			"infra": "infra भागीदारी टॉगल करें",
+			"status": "डेमन स्थिति दिखाएँ",
+			"start": "डेमन शुरू करें",
+			"stop": "डेमन रोकें",
+			"exit": "बाहर निकलें"
+		},
+		"roomId": "होस्ट रूम ID (कनेक्शन कोड, खाली = केवल infra):",
+		"password": "होस्ट पासवर्ड:",
+		"nodeHash": "होस्ट nodeHash (वैकल्पिक, कनेक्शन-कोड API से):",
+		"saved": "कॉन्फ़िगरेशन सहेजा गया।",
+		"infraToggle": "infra भागीदारी सक्षम करें?",
+		"infraSet": "infra भागीदारी ${value} पर सेट की गई।",
+		"on": "सक्षम",
+		"off": "अक्षम",
+		"alreadyRunning": "डेमन पहले से चल रहा है (pid ${pid})।",
+		"startingDaemon": "डेमन शुरू हो रहा है...",
+		"startFailed": "डेमन शुरू करने में विफल: ${error}",
+		"notRunning": "डेमन नहीं चल रहा है।",
+		"stoppingDaemon": "डेमन रोका जा रहा है (pid ${pid})...",
+		"stopFailed": "डेमन रोकने में विफल।",
+		"status": {
+			"daemon": "डेमन: ${state}",
+			"running": "चल रहा है",
+			"stopped": "रुका हुआ",
+			"pid": "PID: ${pid}",
+			"nodeHash": "स्थानीय nodeHash: ${hash}",
+			"mode": "मोड: ${mode}",
+			"host": "होस्ट worker",
+			"infra": "केवल infra",
+			"connected": "कनेक्टेड होस्ट: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "स्थिति अपडेट: ${time}"
+		},
+		"pressEnter": "जारी रखने के लिए Enter दबाएँ..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Deno कैश साफ़ किए जा रहे हैं...",
+			"removingCaches": "कैश फ़ाइलें हटाई जा रही हैं..."
+		},
+		"deno": {
+			"installFailedFallback": "आधिकारिक इंस्टॉलर विफल, GitHub रिलीज़ zip पर वापस जा रहे हैं...",
+			"installingTermux": "Termux के लिए Deno स्थापित किया जा रहा है...",
+			"isRequired": "त्रुटि: deno स्थापित करने में विफल। कृपया इसे मैन्युअल रूप से स्थापित करें।",
+			"managedUpgradeFailed": "${manager} के माध्यम से Deno अपग्रेड विफल (पैकेज ${package})।",
+			"missing": "Deno अनुपस्थित, स्वतः स्थापित हो रहा है...",
+			"notWorking": "Deno काम नहीं कर रहा है।",
+			"patchFailed": "Termux के लिए Deno पैच करने में विफल।",
+			"patchMissing": "Deno पैच नहीं कर सकते: deno बाइनरी नहीं मिली।",
+			"patchUnsupportedArch": "Termux पैचिंग के लिए असमर्थित आर्किटेक्चर: ${arch}",
+			"pinNotHonored": "Deno संस्करण पिन की गई ${spec} से मेल नहीं खाता (${manager} के माध्यम से अपग्रेड)।",
+			"upgradeFailed": "Deno अपग्रेड विफल।",
+			"upgradeFailedTermux": "Termux पर Deno अपग्रेड विफल; पुनः स्थापित किया जा रहा है..."
+		},
+		"git": {
+			"alreadyUpToDate": "पहले से अद्यतित।",
+			"backupSavedTo": "स्थानीय परिवर्तन ${path} में सहेजे गए",
+			"branchesDiverged": "स्थानीय और रिमोट शाखाएँ अलग हो गई हैं।",
+			"dirtyWorkingDirectory": "कार्य निर्देशिका में अप्रतिबद्ध परिवर्तन हैं।",
+			"fetchFailed": "रिमोट से प्राप्त करने में विफल।",
+			"fetchFailedSkippingUpdate": "प्राप्ति विफल; स्वतः अपडेट छोड़ा जा रहा है।",
+			"fetchingAndResetting": "रिमोट स्थिति में प्राप्त कर रहे हैं और रीसेट कर रहे हैं...",
+			"installFailedManual": "git स्थापित करने में विफल। कृपया इसे मैन्युअल रूप से स्थापित करें।",
+			"installFailedWinget": "winget के माध्यम से git स्थापित करने में विफल।",
+			"localBranchAhead": "स्थानीय शाखा रिमोट से आगे है।",
+			"localChangesDetected": "स्थानीय परिवर्तन मिले।",
+			"notInstalled": "git स्थापित नहीं है।",
+			"notInstalledSkippingPull": "git स्थापित नहीं है; pull छोड़ रहे हैं।",
+			"notOnBranch": "शाखा पर नहीं (detached HEAD)।",
+			"noUpstreamBranch": "कोई upstream शाखा कॉन्फ़िगर नहीं है।",
+			"remoteRefUnavailable": "रिमोट रेफ़ ${ref} अनुपलब्ध है।",
+			"repoNotFound": "रिपॉज़िटरी नहीं मिली।",
+			"updatingFromRemote": "रिमोट से अपडेट हो रहा है...",
+			"upstreamGoneFallbackMaster": "upstream शाखा गायब है; master पर वापस जा रहे हैं।"
+		},
+		"install": {
+			"browserMissing": "कोई ब्राउज़र नहीं मिला; Chrome स्थापित किया जा रहा है...",
+			"installingDependencies": "निर्भरताएँ स्थापित की जा रही हैं...",
+			"permissionDeniedAsRoot": "${path} के लिए अनुमति अस्वीकृत। root के रूप में चलाने की अनुशंसा नहीं की जाती।",
+			"permissionDeniedNotRoot": "${path} के लिए अनुमति अस्वीकृत। स्वामी/अनुमतियाँ जाँचें।",
+			"rootWarningAsRoot": "आप root के रूप में चला रहे हैं।",
+			"rootWarningPreferUser": "सामान्य उपयोगकर्ता के रूप में चलाने की अनुशंसा की जाती है।",
+			"runnerUpdating": "subfount रनर अपडेट किया जा रहा है...",
+			"untrustedPartsWarning": "चेतावनी: यह इंस्टॉलेशन अविश्वसनीय स्रोतों से कोड चला सकता है।"
+		},
+		"keepalive": {
+			"autoInitDisabled": "स्वतः पुनः-आरंभ अक्षम है (.noautoinit मौजूद); बाहर निकल रहे हैं।",
+			"failedToStart": "डेमन बार-बार शुरू करने में विफल; छोड़ रहे हैं।",
+			"initComplete": "पुनः-आरंभ पूर्ण।",
+			"initFailed": "पुनः-आरंभ विफल।",
+			"restartingTooFast": "डेमन बहुत तेज़ी से पुनः आरंभ हो रहा है; पुनः-आरंभ किया जा रहा है..."
+		},
+		"remove": {
+			"aborted": "हटाना रद्द किया गया।",
+			"confirmPrompt": "यह ${path} से subfount हटा देगा। जारी रखें?",
+			"externalMountWarning": "चेतावनी: ${path} बाहरी/साझा माउंट (${target}) पर है। हटाने से वास्तविक मशीन की प्रति भी मिट जाएगी।",
+			"nonInteractiveRequiresForce": "हटाना इंटरैक्टिव नहीं है। `subfount remove --force` उपयोग करें।",
+			"remove": {
+				"denoFailed": "deno अनइंस्टॉल करने में विफल: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "स्वतः स्थापित सिस्टम पैकेज हटाए जा रहे हैं...",
+				"subfount": {
+					"fromGitSafeDir": "git safe.directory से subfount हटाया जा रहा है...",
+					"fromPath": "PATH से subfount हटाया जा रहा है...",
+					"installationDir": "subfount इंस्टॉलेशन निर्देशिका हटाई जा रही है...",
+					"main": "डेमन रोका जा रहा है और Deno कैश साफ़ किए जा रहे हैं..."
+				}
+			},
+			"subfountInstallationDirRemoved": "subfount इंस्टॉलेशन निर्देशिका हटाई गई।",
+			"subfountUninstallationComplete": "subfount अनइंस्टॉलेशन पूर्ण।",
+			"uninstalling": {
+				"chrome": "Chrome अनइंस्टॉल किया जा रहा है...",
+				"deno": "Deno अनइंस्टॉल किया जा रहा है...",
+				"git": "git अनइंस्टॉल किया जा रहा है...",
+				"winget": "winget अनइंस्टॉल किया जा रहा है..."
+			},
+			"yn": "पुष्टि करें? (y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "डेमन रोका जा रहा है...",
+			"complete": "डेमन रुक गया।"
+		},
+		"tempDir": {
+			"blocked": "subfount अस्थायी निर्देशिका में स्थापित है और यहाँ नहीं चल सकता। इसे स्थायी स्थान पर ले जाएँ, फिर अनइंस्टॉल करने के लिए `subfount remove` चलाएँ।"
+		},
+		"update": {
+			"createdNoUpdate": ".noupdate बनाया गया; स्वतः अपडेट रोके गए।",
+			"pinningToCommit": "कमिट ${ref} पर पिन किया जा रहा है...",
+			"pinningToPullRequest": "पुल रिक्वेस्ट #${ref} पर पिन किया जा रहा है...",
+			"removedNoUpdate": ".noupdate हटाया गया; स्वतः अपडेट फिर से शुरू।",
+			"skippingSubfountUpdate": "स्वतः अपडेट रुका हुआ है (.noupdate); छोड़ रहे हैं।",
+			"switchingToBranch": "शाखा ${ref} पर स्विच किया जा रहा है...",
+			"switchingToRemote": "origin को ${ref} पर स्विच किया जा रहा है...",
+			"unknownTarget": "अज्ञात अपडेट लक्ष्य: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "स्वतः अपडेट रुका हुआ है (.noupdate मौजूद)।",
+			"branch": {
+				"detached": "detached",
+				"title": "शाखा: ${branch}"
+			},
+			"commit": "कमिट: ${ref}",
+			"noGit": "git स्थापित नहीं है।",
+			"noRepo": "git रिपॉज़िटरी नहीं।",
+			"remote": "रिमोट: ${ref}",
+			"status": {
+				"title": "स्थिति: ${status}",
+				"upToDate": "अद्यतित",
+				"behind": "रिमोट से पीछे (अपडेट उपलब्ध)",
+				"ahead": "रिमोट से आगे",
+				"diverged": "रिमोट से अलग",
+				"fetchFailed": "प्राप्त नहीं कर सके",
+				"detachedNoCompare": "detached (कोई रिमोट तुलना नहीं)"
+			}
+		}
+	}
+}

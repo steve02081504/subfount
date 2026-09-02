@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount 구성 패널",
+		"chooseAction": "작업 선택",
+		"menu": {
+			"connection": "연결 설정",
+			"infra": "infra 참여 전환",
+			"status": "데몬 상태 표시",
+			"start": "데몬 시작",
+			"stop": "데몬 중지",
+			"exit": "종료"
+		},
+		"roomId": "호스트 룸 ID (연결 코드, 비어 있음 = infra만):",
+		"password": "호스트 비밀번호:",
+		"nodeHash": "호스트 nodeHash (선택 사항, 연결 코드 API에서):",
+		"saved": "구성이 저장되었습니다.",
+		"infraToggle": "infra 참여를 활성화하시겠습니까?",
+		"infraSet": "infra 참여가 ${value}로 설정되었습니다.",
+		"on": "켜짐",
+		"off": "꺼짐",
+		"alreadyRunning": "데몬이 이미 실행 중입니다 (pid ${pid}).",
+		"startingDaemon": "데몬 시작 중...",
+		"startFailed": "데몬 시작 실패: ${error}",
+		"notRunning": "데몬이 실행 중이 아닙니다.",
+		"stoppingDaemon": "데몬 중지 중 (pid ${pid})...",
+		"stopFailed": "데몬 중지 실패.",
+		"status": {
+			"daemon": "데몬: ${state}",
+			"running": "실행 중",
+			"stopped": "중지됨",
+			"pid": "PID: ${pid}",
+			"nodeHash": "로컬 nodeHash: ${hash}",
+			"mode": "모드: ${mode}",
+			"host": "호스트 worker",
+			"infra": "infra만",
+			"connected": "연결된 호스트: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "상태 업데이트: ${time}"
+		},
+		"pressEnter": "계속하려면 Enter를 누르세요..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Deno 캐시 정리 중...",
+			"removingCaches": "캐시 파일 제거 중..."
+		},
+		"deno": {
+			"installFailedFallback": "공식 설치 프로그램 실패, GitHub 릴리스 zip으로 대체...",
+			"installingTermux": "Termux용 Deno 설치 중...",
+			"isRequired": "오류: deno 설치 실패. 수동으로 설치해 주세요.",
+			"managedUpgradeFailed": "${manager}을 통한 Deno 업그레이드 실패 (패키지 ${package}).",
+			"missing": "Deno 없음, 자동 설치 중...",
+			"notWorking": "Deno가 작동하지 않습니다.",
+			"patchFailed": "Termux용 Deno 패치 실패.",
+			"patchMissing": "Deno를 패치할 수 없음: deno 바이너리를 찾을 수 없습니다.",
+			"patchUnsupportedArch": "Termux 패치에 지원되지 않는 아키텍처: ${arch}",
+			"pinNotHonored": "Deno 버전이 고정된 사양 ${spec}과 일치하지 않습니다 (${manager}을 통해 업그레이드).",
+			"upgradeFailed": "Deno 업그레이드 실패.",
+			"upgradeFailedTermux": "Termux에서 Deno 업그레이드 실패; 재설치 중..."
+		},
+		"git": {
+			"alreadyUpToDate": "이미 최신 상태입니다.",
+			"backupSavedTo": "로컬 변경 사항이 ${path}에 백업됨",
+			"branchesDiverged": "로컬 및 원격 브랜치가 분기되었습니다.",
+			"dirtyWorkingDirectory": "작업 디렉터리에 커밋되지 않은 변경 사항이 있습니다.",
+			"fetchFailed": "원격에서 가져오기 실패.",
+			"fetchFailedSkippingUpdate": "가져오기 실패; 자동 업데이트 건너뜀.",
+			"fetchingAndResetting": "가져오고 원격 상태로 재설정 중...",
+			"installFailedManual": "git 설치 실패. 수동으로 설치해 주세요.",
+			"installFailedWinget": "winget을 통한 git 설치 실패.",
+			"localBranchAhead": "로컬 브랜치가 원격보다 앞서 있습니다.",
+			"localChangesDetected": "로컬 변경 사항이 감지되었습니다.",
+			"notInstalled": "git이 설치되어 있지 않습니다.",
+			"notInstalledSkippingPull": "git이 설치되어 있지 않아 pull을 건너뜁니다.",
+			"notOnBranch": "브랜치에 있지 않습니다 (detached HEAD).",
+			"noUpstreamBranch": "업스트림 브랜치가 구성되어 있지 않습니다.",
+			"remoteRefUnavailable": "원격 참조 ${ref}를 사용할 수 없습니다.",
+			"repoNotFound": "리포지토리를 찾을 수 없습니다.",
+			"updatingFromRemote": "원격에서 업데이트 중...",
+			"upstreamGoneFallbackMaster": "업스트림 브랜치가 사라져 master로 대체합니다."
+		},
+		"install": {
+			"browserMissing": "브라우저를 찾을 수 없어 Chrome을 설치 중...",
+			"installingDependencies": "의존성 설치 중...",
+			"permissionDeniedAsRoot": "${path}에 대한 권한이 거부되었습니다. root로 실행하는 것은 권장되지 않습니다.",
+			"permissionDeniedNotRoot": "${path}에 대한 권한이 거부되었습니다. 소유자/권한을 확인하세요.",
+			"rootWarningAsRoot": "root로 실행 중입니다.",
+			"rootWarningPreferUser": "일반 사용자로 실행하는 것이 좋습니다.",
+			"runnerUpdating": "subfount 러너 업데이트 중...",
+			"untrustedPartsWarning": "경고: 이 설치 과정은 신뢰할 수 없는 소스의 코드를 실행할 수 있습니다."
+		},
+		"keepalive": {
+			"autoInitDisabled": "자동 재초기화가 비활성화되어 있습니다 (.noautoinit 존재); 종료합니다.",
+			"failedToStart": "데몬 시작이 반복적으로 실패하여 포기합니다.",
+			"initComplete": "재초기화 완료.",
+			"initFailed": "재초기화 실패.",
+			"restartingTooFast": "데몬이 너무 빨리 재시작되어 재초기화 중..."
+		},
+		"remove": {
+			"aborted": "제거가 취소되었습니다.",
+			"confirmPrompt": "${path}에서 subfount를 제거합니다. 계속하시겠습니까?",
+			"externalMountWarning": "경고: ${path}가 외부/공유 마운트 (${target})에 있습니다. 제거하면 실제 머신의 복사본도 삭제됩니다.",
+			"nonInteractiveRequiresForce": "제거는 대화형이 아닙니다. `subfount remove --force`를 사용하세요.",
+			"remove": {
+				"denoFailed": "deno 제거 실패: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "자동 설치된 시스템 패키지 제거 중...",
+				"subfount": {
+					"fromGitSafeDir": "git safe.directory에서 subfount 제거 중...",
+					"fromPath": "PATH에서 subfount 제거 중...",
+					"installationDir": "subfount 설치 디렉터리 제거 중...",
+					"main": "데몬 중지 및 Deno 캐시 정리 중..."
+				}
+			},
+			"subfountInstallationDirRemoved": "subfount 설치 디렉터리가 제거되었습니다.",
+			"subfountUninstallationComplete": "subfount 제거 완료.",
+			"uninstalling": {
+				"chrome": "Chrome 제거 중...",
+				"deno": "Deno 제거 중...",
+				"git": "git 제거 중...",
+				"winget": "winget 제거 중..."
+			},
+			"yn": "확인하시겠습니까? (y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "데몬 중지 중...",
+			"complete": "데몬이 중지되었습니다."
+		},
+		"tempDir": {
+			"blocked": "subfount가 임시 디렉터리에 설치되어 여기서 실행할 수 없습니다. 영구 위치로 이동한 다음 `subfount remove`를 실행하여 제거하세요."
+		},
+		"update": {
+			"createdNoUpdate": ".noupdate 생성됨; 자동 업데이트가 일시 중지되었습니다.",
+			"pinningToCommit": "커밋 ${ref}에 고정 중...",
+			"pinningToPullRequest": "풀 리퀘스트 #${ref}에 고정 중...",
+			"removedNoUpdate": ".noupdate 제거됨; 자동 업데이트 재개.",
+			"skippingSubfountUpdate": "자동 업데이트가 일시 중지됨 (.noupdate); 건너뜁니다.",
+			"switchingToBranch": "브랜치 ${ref}(으)로 전환 중...",
+			"switchingToRemote": "origin을 ${ref}(으)로 전환 중...",
+			"unknownTarget": "알 수 없는 업데이트 대상: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "자동 업데이트가 일시 중지됨 (.noupdate 존재).",
+			"branch": {
+				"detached": "분리됨",
+				"title": "브랜치: ${branch}"
+			},
+			"commit": "커밋: ${ref}",
+			"noGit": "git이 설치되어 있지 않습니다.",
+			"noRepo": "git 리포지토리가 아닙니다.",
+			"remote": "원격: ${ref}",
+			"status": {
+				"title": "상태: ${status}",
+				"upToDate": "최신 상태",
+				"behind": "원격보다 뒤처짐 (업데이트 가능)",
+				"ahead": "원격보다 앞섬",
+				"diverged": "원격과 분기됨",
+				"fetchFailed": "가져올 수 없음",
+				"detachedNoCompare": "분리됨 (원격 비교 없음)"
+			}
+		}
+	}
+}
