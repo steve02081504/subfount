@@ -1,0 +1,38 @@
+{
+	"nodeModulesDir": "auto",
+	"lock": false,
+	"minimumDependencyAge": {
+		"exclude": [
+			"npm:@steve02081504/*",
+			"npm:on-shutdown"
+		]
+	},
+	"unstable": [
+		"npm-lazy-caching"
+	],
+	"tasks": {
+		"start": "deno run --allow-scripts --allow-all src/index.mjs",
+		"infra": "deno run --allow-scripts --allow-all src/index.mjs",
+		"panel": "deno run --allow-scripts --allow-all src/panel.mjs",
+		"help": "deno run --allow-scripts --allow-all src/index.mjs --help",
+		"test": "deno test --allow-all --allow-scripts",
+		"lint": "deno lint",
+		"check": "deno check --all src/index.mjs src/panel.mjs src/config.mjs src/process.mjs src/host.mjs src/handlers.mjs src/device.mjs src/i18n.mjs"
+	},
+	"imports": {
+		"npm:inquirer": "npm:inquirer@^14.2.0",
+		"npm:on-shutdown": "npm:on-shutdown@^0.0.5",
+		"npm:node-os-utils": "npm:node-os-utils@2.0.4",
+		"npm:@steve02081504/async-eval": "npm:@steve02081504/async-eval@^0.0.15",
+		"npm:@steve02081504/exec": "npm:@steve02081504/exec@^0.0.8",
+		"npm:@steve02081504/fount-p2p": "npm:@steve02081504/fount-p2p@^0.0.41"
+	},
+	"lint": {
+		"rules": {
+			"exclude": [
+				"no-unversioned-import",
+				"no-import-prefix"
+			]
+		}
+	}
+}

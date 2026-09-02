@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount configuration panel",
+		"chooseAction": "Choose an action",
+		"menu": {
+			"connection": "Connection settings",
+			"infra": "Infra participation toggle",
+			"status": "Show daemon status",
+			"start": "Start daemon",
+			"stop": "Stop daemon",
+			"exit": "Exit"
+		},
+		"roomId": "Host room ID (connection code, empty = infra only):",
+		"password": "Host password:",
+		"nodeHash": "Host nodeHash (optional, from connection-code API):",
+		"saved": "Configuration saved.",
+		"infraToggle": "Enable infra participation?",
+		"infraSet": "Infra participation set to ${value}.",
+		"on": "on",
+		"off": "off",
+		"alreadyRunning": "Daemon is already running (pid ${pid}).",
+		"startingDaemon": "Starting daemon...",
+		"startFailed": "Failed to start daemon: ${error}",
+		"notRunning": "Daemon is not running.",
+		"stoppingDaemon": "Stopping daemon (pid ${pid})...",
+		"stopFailed": "Failed to stop daemon.",
+		"status": {
+			"daemon": "Daemon: ${state}",
+			"running": "running",
+			"stopped": "stopped",
+			"pid": "PID: ${pid}",
+			"nodeHash": "Local nodeHash: ${hash}",
+			"mode": "Mode: ${mode}",
+			"host": "host worker",
+			"infra": "infra only",
+			"connected": "Connected host: ${host}",
+			"infrastructure": "Infra: ${value}",
+			"updated": "Status updated: ${time}"
+		},
+		"pressEnter": "Press Enter to continue..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Cleaning Deno caches...",
+			"removingCaches": "Removing cache files..."
+		},
+		"deno": {
+			"installFailedFallback": "Official installer failed, falling back to GitHub release zip...",
+			"installingTermux": "Installing Deno for Termux...",
+			"isRequired": "Error: failed to install deno. Please install it manually.",
+			"managedUpgradeFailed": "Deno upgrade via ${manager} failed (package ${package}).",
+			"missing": "Deno missing, auto installing...",
+			"notWorking": "Deno is not working.",
+			"patchFailed": "Failed to patch Deno for Termux.",
+			"patchMissing": "Cannot patch Deno: deno binary not found.",
+			"patchUnsupportedArch": "Unsupported architecture for Termux patching: ${arch}",
+			"pinNotHonored": "Deno version does not match the pinned spec ${spec} (upgraded via ${manager}).",
+			"upgradeFailed": "Deno upgrade failed.",
+			"upgradeFailedTermux": "Deno upgrade failed on Termux; reinstalling..."
+		},
+		"git": {
+			"alreadyUpToDate": "Already up to date.",
+			"backupSavedTo": "Local changes backed up to ${path}",
+			"branchesDiverged": "Local and remote branches have diverged.",
+			"dirtyWorkingDirectory": "Working directory has uncommitted changes.",
+			"fetchFailed": "Failed to fetch from remote.",
+			"fetchFailedSkippingUpdate": "Fetch failed; skipping auto update.",
+			"fetchingAndResetting": "Fetching and resetting to remote state...",
+			"installFailedManual": "Failed to install git. Please install it manually.",
+			"installFailedWinget": "Failed to install git via winget.",
+			"localBranchAhead": "Local branch is ahead of the remote.",
+			"localChangesDetected": "Local changes detected.",
+			"notInstalled": "git is not installed.",
+			"notInstalledSkippingPull": "git is not installed; skipping pull.",
+			"notOnBranch": "Not on a branch (detached HEAD).",
+			"noUpstreamBranch": "No upstream branch is configured.",
+			"remoteRefUnavailable": "Remote ref ${ref} is unavailable.",
+			"repoNotFound": "Repository not found.",
+			"updatingFromRemote": "Updating from remote...",
+			"upstreamGoneFallbackMaster": "Upstream branch is gone; falling back to master."
+		},
+		"install": {
+			"browserMissing": "No browser found; installing Chrome...",
+			"installingDependencies": "Installing dependencies...",
+			"permissionDeniedAsRoot": "Permission denied for ${path}. Running as root is not recommended.",
+			"permissionDeniedNotRoot": "Permission denied for ${path}. Check ownership/permissions.",
+			"rootWarningAsRoot": "You are running as root.",
+			"rootWarningPreferUser": "It is recommended to run as a regular user.",
+			"runnerUpdating": "Updating subfount runner...",
+			"untrustedPartsWarning": "Warning: this installation may run code from untrusted sources."
+		},
+		"keepalive": {
+			"autoInitDisabled": "Auto re-init is disabled (.noautoinit present); exiting.",
+			"failedToStart": "Failed to start the daemon repeatedly; giving up.",
+			"initComplete": "Re-initialization complete.",
+			"initFailed": "Re-initialization failed.",
+			"restartingTooFast": "Daemon restarting too fast; re-initializing..."
+		},
+		"remove": {
+			"aborted": "Removal aborted.",
+			"confirmPrompt": "This will remove subfount from ${path}. Continue?",
+			"externalMountWarning": "Warning: ${path} is on an external/shared mount (${target}). Removal will delete the real machine's copy.",
+			"nonInteractiveRequiresForce": "Removal is not interactive. Use `subfount remove --force`.",
+			"remove": {
+				"denoFailed": "Failed to uninstall deno: ${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "Removing auto-installed system packages...",
+				"subfount": {
+					"fromGitSafeDir": "Removing subfount from git safe.directory...",
+					"fromPath": "Removing subfount from PATH...",
+					"installationDir": "Removing subfount installation directory...",
+					"main": "Stopping daemon and cleaning Deno caches..."
+				}
+			},
+			"subfountInstallationDirRemoved": "subfount installation directory removed.",
+			"subfountUninstallationComplete": "subfount uninstallation complete.",
+			"uninstalling": {
+				"chrome": "Uninstalling Chrome...",
+				"deno": "Uninstalling Deno...",
+				"git": "Uninstalling git...",
+				"winget": "Uninstalling winget..."
+			},
+			"yn": "Confirm? (y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "Stopping daemon...",
+			"complete": "Daemon stopped."
+		},
+		"tempDir": {
+			"blocked": "subfount is installed in a temporary directory and cannot run here. Move it to a persistent location, then run `subfount remove` to uninstall."
+		},
+		"update": {
+			"createdNoUpdate": "Created .noupdate; auto updates are paused.",
+			"pinningToCommit": "Pinning to commit ${ref}...",
+			"pinningToPullRequest": "Pinning to pull request #${ref}...",
+			"removedNoUpdate": "Removed .noupdate; auto updates resumed.",
+			"skippingSubfountUpdate": "Auto update is paused (.noupdate); skipping.",
+			"switchingToBranch": "Switching to branch ${ref}...",
+			"switchingToRemote": "Switching origin to ${ref}...",
+			"unknownTarget": "Unknown update target: ${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "Auto update is paused (.noupdate present).",
+			"branch": {
+				"detached": "detached",
+				"title": "Branch: ${branch}"
+			},
+			"commit": "Commit: ${ref}",
+			"noGit": "git is not installed.",
+			"noRepo": "Not a git repository.",
+			"remote": "Remote: ${ref}",
+			"status": {
+				"title": "Status: ${status}",
+				"upToDate": "up to date",
+				"behind": "behind remote (update available)",
+				"ahead": "ahead of remote",
+				"diverged": "diverged from remote",
+				"fetchFailed": "could not fetch",
+				"detachedNoCompare": "detached (no remote comparison)"
+			}
+		}
+	}
+}

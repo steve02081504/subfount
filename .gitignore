@@ -1,0 +1,15 @@
+# Deno
+.deno/
+node_modules/
+deno.lock
+
+# P2P node data
+.fount-p2p-node/
+
+# Runtime data (config / daemon pid / status)
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

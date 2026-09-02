@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount 配置面板",
+		"chooseAction": "选择操作",
+		"menu": {
+			"connection": "连接设置",
+			"infra": "infra 参与开关",
+			"status": "查看守护进程状态",
+			"start": "启动守护进程",
+			"stop": "停止守护进程",
+			"exit": "退出"
+		},
+		"roomId": "主机房间 ID（连接码，留空 = 仅 infra）：",
+		"password": "主机密码：",
+		"nodeHash": "主机 nodeHash（可选，来自连接码 API）：",
+		"saved": "配置已保存。",
+		"infraToggle": "是否参与 infra？",
+		"infraSet": "infra 参与已设为 ${value}。",
+		"on": "开启",
+		"off": "关闭",
+		"alreadyRunning": "守护进程已在运行（pid ${pid}）。",
+		"startingDaemon": "正在启动守护进程...",
+		"startFailed": "启动守护进程失败：${error}",
+		"notRunning": "守护进程未在运行。",
+		"stoppingDaemon": "正在停止守护进程（pid ${pid}）...",
+		"stopFailed": "停止守护进程失败。",
+		"status": {
+			"daemon": "守护进程：${state}",
+			"running": "运行中",
+			"stopped": "已停止",
+			"pid": "PID：${pid}",
+			"nodeHash": "本机 nodeHash：${hash}",
+			"mode": "模式：${mode}",
+			"host": "主机 worker",
+			"infra": "仅 infra",
+			"connected": "已连接主机：${host}",
+			"infrastructure": "infra：${value}",
+			"updated": "状态更新时间：${time}"
+		},
+		"pressEnter": "按回车继续..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "正在清理 Deno 缓存...",
+			"removingCaches": "正在删除缓存文件..."
+		},
+		"deno": {
+			"installFailedFallback": "官方安装器失败，回退到 GitHub release zip...",
+			"installingTermux": "正在为 Termux 安装 Deno...",
+			"isRequired": "错误：无法安装 deno，请手动安装。",
+			"managedUpgradeFailed": "通过 ${manager} 升级 Deno 失败（软件包 ${package}）。",
+			"missing": "缺少 deno，正在自动安装...",
+			"notWorking": "Deno 无法正常工作。",
+			"patchFailed": "为 Termux 修补 Deno 失败。",
+			"patchMissing": "无法修补 Deno：未找到 deno 二进制。",
+			"patchUnsupportedArch": "Termux 修补不支持的架构：${arch}",
+			"pinNotHonored": "Deno 版本与 pin 的 ${spec} 不一致（经 ${manager} 升级）。",
+			"upgradeFailed": "Deno 升级失败。",
+			"upgradeFailedTermux": "Termux 上 Deno 升级失败，正在重装..."
+		},
+		"git": {
+			"alreadyUpToDate": "已是最新。",
+			"backupSavedTo": "本地改动已备份到 ${path}",
+			"branchesDiverged": "本地与远端分支已分叉。",
+			"dirtyWorkingDirectory": "工作目录存在未提交的改动。",
+			"fetchFailed": "从远端拉取失败。",
+			"fetchFailedSkippingUpdate": "拉取失败，跳过自动更新。",
+			"fetchingAndResetting": "正在拉取并重置到远端状态...",
+			"installFailedManual": "安装 git 失败，请手动安装。",
+			"installFailedWinget": "通过 winget 安装 git 失败。",
+			"localBranchAhead": "本地分支领先于远端。",
+			"localChangesDetected": "检测到本地改动。",
+			"notInstalled": "未安装 git。",
+			"notInstalledSkippingPull": "未安装 git，跳过 pull。",
+			"notOnBranch": "不处于分支上（detached HEAD）。",
+			"noUpstreamBranch": "未配置上游分支。",
+			"remoteRefUnavailable": "远端引用 ${ref} 不可用。",
+			"repoNotFound": "未找到仓库。",
+			"updatingFromRemote": "正在从远端更新...",
+			"upstreamGoneFallbackMaster": "上游分支已消失，回退到 master。"
+		},
+		"install": {
+			"browserMissing": "未找到浏览器，正在安装 Chrome...",
+			"installingDependencies": "正在安装依赖...",
+			"permissionDeniedAsRoot": "${path} 无权限。不建议以 root 运行。",
+			"permissionDeniedNotRoot": "${path} 无权限。请检查属主/权限。",
+			"rootWarningAsRoot": "你正在以 root 身份运行。",
+			"rootWarningPreferUser": "建议以普通用户运行。",
+			"runnerUpdating": "正在更新 subfount 引导器...",
+			"untrustedPartsWarning": "警告：此次安装可能运行来自不受信任来源的代码。"
+		},
+		"keepalive": {
+			"autoInitDisabled": "已禁用自动重新初始化（存在 .noautoinit），退出。",
+			"failedToStart": "守护进程反复启动失败，放弃。",
+			"initComplete": "重新初始化完成。",
+			"initFailed": "重新初始化失败。",
+			"restartingTooFast": "守护进程重启过快，正在重新初始化..."
+		},
+		"remove": {
+			"aborted": "已取消卸载。",
+			"confirmPrompt": "将从 ${path} 卸载 subfount。继续？",
+			"externalMountWarning": "警告：${path} 位于外部/共享挂载（${target}）。卸载会一并删除真实机器上的副本。",
+			"nonInteractiveRequiresForce": "卸载需要交互。请使用 `subfount remove --force`。",
+			"remove": {
+				"denoFailed": "卸载 deno 失败：${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "正在移除自动安装的系统软件包...",
+				"subfount": {
+					"fromGitSafeDir": "正在从 git safe.directory 移除 subfount...",
+					"fromPath": "正在从 PATH 移除 subfount...",
+					"installationDir": "正在删除 subfount 安装目录...",
+					"main": "正在停止守护进程并清理 Deno 缓存..."
+				}
+			},
+			"subfountInstallationDirRemoved": "subfount 安装目录已删除。",
+			"subfountUninstallationComplete": "subfount 卸载完成。",
+			"uninstalling": {
+				"chrome": "正在卸载 Chrome...",
+				"deno": "正在卸载 Deno...",
+				"git": "正在卸载 git...",
+				"winget": "正在卸载 winget..."
+			},
+			"yn": "确认？(y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "正在停止守护进程...",
+			"complete": "守护进程已停止。"
+		},
+		"tempDir": {
+			"blocked": "subfount 安装在临时目录中，无法在此运行。请移到持久位置，然后运行 `subfount remove` 卸载。"
+		},
+		"update": {
+			"createdNoUpdate": "已创建 .noupdate，暂停自动更新。",
+			"pinningToCommit": "正在固定到提交 ${ref}...",
+			"pinningToPullRequest": "正在固定到 PR #${ref}...",
+			"removedNoUpdate": "已移除 .noupdate，恢复自动更新。",
+			"skippingSubfountUpdate": "自动更新已暂停（存在 .noupdate），跳过。",
+			"switchingToBranch": "正在切换到分支 ${ref}...",
+			"switchingToRemote": "正在将 origin 切换到 ${ref}...",
+			"unknownTarget": "未知的更新目标：${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "自动更新已暂停（存在 .noupdate）。",
+			"branch": {
+				"detached": "游离",
+				"title": "分支：${branch}"
+			},
+			"commit": "提交：${ref}",
+			"noGit": "未安装 git。",
+			"noRepo": "不是 git 仓库。",
+			"remote": "远端：${ref}",
+			"status": {
+				"title": "状态：${status}",
+				"upToDate": "已是最新",
+				"behind": "落后于远端（有可用更新）",
+				"ahead": "领先于远端",
+				"diverged": "与远端分叉",
+				"fetchFailed": "无法拉取",
+				"detachedNoCompare": "游离（无法与远端比较）"
+			}
+		}
+	}
+}

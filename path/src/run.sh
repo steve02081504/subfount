@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# Deno server runner + keepalive helpers
+
+handle_auto_reinitialization() {
+	if [ -f "$SUBF_DIR/.noautoinit" ]; then
+		print_i18n_yellow 'keepalive.autoInitDisabled' >&2
+		exit 1
+	fi
+	print_i18n_yellow 'keepalive.restartingTooFast' >&2
+
+	if ! ("$0" init); then
+		print_i18n_red 'keepalive.initFailed' >&2
+		exit 1
+	fi
+	get_i18n 'keepalive.initComplete'
+}
+
+run() {
+	local original_title exit_code
+	if [[ $(id -u) -eq 0 ]]; then
+		print_i18n_yellow 'install.rootWarningAsRoot' >&2
+		print_i18n_yellow 'install.rootWarningPreferUser' >&2
+	fi
+	write_taskbar_progress 5
+	original_title=$(get_title)
+	set_title ""
+	require unix/termux
+	termux_ensure_sensor_api
+	local v8_flags=""
+	if [[ -n "$SUBF_V8_FLAGS" ]]; then
+		v8_flags="$SUBF_V8_FLAGS"
+	fi
+	local heap_size_mb=100 config_path heap_size_bytes calculated_mb
+	config_path="$SUBF_DIR/data/config.json"
+	if [ -f "$config_path" ] && command -v jq &>/dev/null; then
+		heap_size_bytes=$(jq -r '.prelaunch.heapSize // "0"' "$config_path")
+		calculated_mb=$(( (heap_size_bytes + 524288) / 1048576 ))
+		if [ "$calculated_mb" -gt 0 ]; then
+			heap_size_mb=$calculated_mb
+		fi
+	fi
+	if [[ -n "$v8_flags" ]]; then
+		v8_flags="$v8_flags,--initial-heap-size=${heap_size_mb}"
+	else
+		v8_flags="--initial-heap-size=${heap_size_mb}"
+	fi
+	write_taskbar_progress 10
+	if [ -z "$SUBF_START_TIME" ]; then
+		SUBF_START_TIME=$(timestamp)
+	fi
+	export SUBF_START_TIME
+	SUBF_DENO_START_TIME=$(timestamp)
+	export SUBF_DENO_START_TIME
+	write_taskbar_progress 25
+	set_title "𝓯"
+	local boosted=0
+	if [[ $(id -u) -eq 0 ]]; then
+		renice -n -10 -p $$ >/dev/null 2>&1 && boosted=1
+	fi
+	if [[ "$OS_TYPE" = "Linux" ]] && command -v ionice >/dev/null 2>&1; then
+		ionice -c2 -n0 -p $$ >/dev/null 2>&1 || true
+	fi
+	export SUBF_STARTUP_PRIORITY_BOOST=1
+	if [[ ${SUBF_DEBUG:-0} -eq 1 ]]; then
+		run_deno run --allow-scripts --allow-all --inspect-brk -c "$SUBF_DIR/deno.json" --v8-flags="$v8_flags" "$SUBF_DIR/src/index.mjs" "$@"
+	else
+		run_deno run --allow-scripts --allow-all -c "$SUBF_DIR/deno.json" --v8-flags="$v8_flags" "$SUBF_DIR/src/index.mjs" "$@"
+	fi
+	exit_code=$?
+	if [[ "$boosted" -eq 1 ]]; then
+		renice -n 0 -p $$ >/dev/null 2>&1 || true
+	fi
+	unset SUBF_STARTUP_PRIORITY_BOOST
+	set_title "$original_title"
+	unset SUBF_START_TIME
+	unset SUBF_DENO_START_TIME
+	if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 130 ] && [ "$exit_code" -ne 131 ]; then
+		write_taskbar_progress_error
+	fi
+	return $exit_code
+}
+
+# Foreground server entry (debug flag + keepalive/update restart loop)
+run_server() {
+	if [ "$1" = "debug" ]; then
+		debug_on
+		shift
+	fi
+	run_with_updates "$@"
+}
+
+# Run server; repeat after self-update when deno exits 131
+run_with_updates() {
+	local server_status
+	run "$@"
+	server_status=$?
+	# Self-update restart runs bare server — not "$@". e.g. `subfount run shell/install x`
+	# must not re-run install after crash recovery.
+	while [ "$server_status" -eq 131 ]; do
+		update_subfount_and_deno
+		run
+		server_status=$?
+	done
+	return "$server_status"
+}

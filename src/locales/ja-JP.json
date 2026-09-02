@@ -1,0 +1,164 @@
+{
+	"panel": {
+		"title": "Subfount 設定パネル",
+		"chooseAction": "操作を選択",
+		"menu": {
+			"connection": "接続設定",
+			"infra": "infra 参加の切り替え",
+			"status": "デーモン状態を表示",
+			"start": "デーモンを起動",
+			"stop": "デーモンを停止",
+			"exit": "終了"
+		},
+		"roomId": "ホストルーム ID（接続コード、空 = infra のみ）：",
+		"password": "ホストパスワード：",
+		"nodeHash": "ホスト nodeHash（任意、接続コード API から）：",
+		"saved": "設定を保存しました。",
+		"infraToggle": "infra に参加しますか？",
+		"infraSet": "infra 参加を ${value} に設定しました。",
+		"on": "オン",
+		"off": "オフ",
+		"alreadyRunning": "デーモンは既に実行中です（pid ${pid}）。",
+		"startingDaemon": "デーモンを起動しています...",
+		"startFailed": "デーモンの起動に失敗しました：${error}",
+		"notRunning": "デーモンは実行されていません。",
+		"stoppingDaemon": "デーモンを停止しています（pid ${pid}）...",
+		"stopFailed": "デーモンの停止に失敗しました。",
+		"status": {
+			"daemon": "デーモン：${state}",
+			"running": "実行中",
+			"stopped": "停止中",
+			"pid": "PID：${pid}",
+			"nodeHash": "ローカル nodeHash：${hash}",
+			"mode": "モード：${mode}",
+			"host": "ホスト worker",
+			"infra": "infra のみ",
+			"connected": "接続先ホスト：${host}",
+			"infrastructure": "infra：${value}",
+			"updated": "状態更新時刻：${time}"
+		},
+		"pressEnter": "Enter を押して続行..."
+	},
+	"cli": {
+		"clean": {
+			"cleaningDenoCaches": "Deno キャッシュを掃除しています...",
+			"removingCaches": "キャッシュファイルを削除しています..."
+		},
+		"deno": {
+			"installFailedFallback": "公式インストーラが失敗したため、GitHub release zip にフォールバック...",
+			"installingTermux": "Termux 用に Deno をインストールしています...",
+			"isRequired": "エラー：deno のインストールに失敗しました。手動でインストールしてください。",
+			"managedUpgradeFailed": "${manager} による Deno アップグレードに失敗しました（パッケージ ${package}）。",
+			"missing": "deno が見つかりません。自動インストール中...",
+			"notWorking": "Deno が正常に動作していません。",
+			"patchFailed": "Termux 用の Deno パッチに失敗しました。",
+			"patchMissing": "Deno をパッチできません：deno バイナリが見つかりません。",
+			"patchUnsupportedArch": "Termux パッチ非対応アーキテクチャ：${arch}",
+			"pinNotHonored": "Deno のバージョンが pin された ${spec} と一致しません（${manager} でアップグレード）。",
+			"upgradeFailed": "Deno のアップグレードに失敗しました。",
+			"upgradeFailedTermux": "Termux で Deno のアップグレードに失敗しました。再インストール中..."
+		},
+		"git": {
+			"alreadyUpToDate": "既に最新です。",
+			"backupSavedTo": "ローカル変更を ${path} にバックアップしました",
+			"branchesDiverged": "ローカルとリモートのブランチが分岐しています。",
+			"dirtyWorkingDirectory": "作業ディレクトリに未コミットの変更があります。",
+			"fetchFailed": "リモートからの取得に失敗しました。",
+			"fetchFailedSkippingUpdate": "取得に失敗したため、自動更新をスキップします。",
+			"fetchingAndResetting": "取得してリモート状態にリセットしています...",
+			"installFailedManual": "git のインストールに失敗しました。手動でインストールしてください。",
+			"installFailedWinget": "winget による git のインストールに失敗しました。",
+			"localBranchAhead": "ローカルブランチがリモートより先行しています。",
+			"localChangesDetected": "ローカルの変更を検出しました。",
+			"notInstalled": "git がインストールされていません。",
+			"notInstalledSkippingPull": "git が未インストールのため、pull をスキップします。",
+			"notOnBranch": "ブランチ上にありません（detached HEAD）。",
+			"noUpstreamBranch": "上流ブランチが設定されていません。",
+			"remoteRefUnavailable": "リモート参照 ${ref} は利用できません。",
+			"repoNotFound": "リポジトリが見つかりません。",
+			"updatingFromRemote": "リモートから更新しています...",
+			"upstreamGoneFallbackMaster": "上流ブランチが消えたため、master にフォールバックします。"
+		},
+		"install": {
+			"browserMissing": "ブラウザが見つかりません。Chrome をインストールしています...",
+			"installingDependencies": "依存関係をインストールしています...",
+			"permissionDeniedAsRoot": "${path} にアクセスできません。root での実行は推奨されません。",
+			"permissionDeniedNotRoot": "${path} にアクセスできません。所有者/権限を確認してください。",
+			"rootWarningAsRoot": "root として実行されています。",
+			"rootWarningPreferUser": "通常ユーザーで実行することをお勧めします。",
+			"runnerUpdating": "subfount ランナーを更新しています...",
+			"untrustedPartsWarning": "警告：このインストールは信頼できないソースのコードを実行する可能性があります。"
+		},
+		"keepalive": {
+			"autoInitDisabled": "自動再初期化が無効です（.noautoinit あり）。終了します。",
+			"failedToStart": "デーモンの起動に繰り返し失敗しました。停止します。",
+			"initComplete": "再初期化が完了しました。",
+			"initFailed": "再初期化に失敗しました。",
+			"restartingTooFast": "デーモンの再起動が速すぎます。再初期化しています..."
+		},
+		"remove": {
+			"aborted": "アンインストールを中止しました。",
+			"confirmPrompt": "${path} から subfount をアンインストールします。続行しますか？",
+			"externalMountWarning": "警告：${path} は外部/共有マウント上にあります（${target}）。アンインストールで実際のマシンのコピーも削除されます。",
+			"nonInteractiveRequiresForce": "アンインストールには対話が必要です。`subfount remove --force` を使用してください。",
+			"remove": {
+				"denoFailed": "deno のアンインストールに失敗しました：${message}"
+			},
+			"removing": {
+				"installedSystemPackages": "自動インストールされたシステムパッケージを削除しています...",
+				"subfount": {
+					"fromGitSafeDir": "git safe.directory から subfount を削除しています...",
+					"fromPath": "PATH から subfount を削除しています...",
+					"installationDir": "subfount のインストールディレクトリを削除しています...",
+					"main": "デーモンを停止し、Deno キャッシュを掃除しています..."
+				}
+			},
+			"subfountInstallationDirRemoved": "subfount のインストールディレクトリを削除しました。",
+			"subfountUninstallationComplete": "subfount のアンインストールが完了しました。",
+			"uninstalling": {
+				"chrome": "Chrome をアンインストールしています...",
+				"deno": "Deno をアンインストールしています...",
+				"git": "git をアンインストールしています...",
+				"winget": "winget をアンインストールしています..."
+			},
+			"yn": "確認しますか？(y/N) "
+		},
+		"shutdown": {
+			"stoppingDaemon": "デーモンを停止しています...",
+			"complete": "デーモンを停止しました。"
+		},
+		"tempDir": {
+			"blocked": "subfount は一時ディレクトリにインストールされており、ここでは実行できません。永続的な場所へ移動し、`subfount remove` でアンインストールしてください。"
+		},
+		"update": {
+			"createdNoUpdate": ".noupdate を作成しました。自動更新を一時停止します。",
+			"pinningToCommit": "コミット ${ref} に固定しています...",
+			"pinningToPullRequest": "PR #${ref} に固定しています...",
+			"removedNoUpdate": ".noupdate を削除しました。自動更新を再開します。",
+			"skippingSubfountUpdate": "自動更新は一時停止中です（.noupdate あり）。スキップします。",
+			"switchingToBranch": "ブランチ ${ref} に切り替えています...",
+			"switchingToRemote": "origin を ${ref} に切り替えています...",
+			"unknownTarget": "不明な更新ターゲット：${ref}"
+		},
+		"version": {
+			"autoUpdatePaused": "自動更新は一時停止中です（.noupdate あり）。",
+			"branch": {
+				"detached": "切り離し",
+				"title": "ブランチ：${branch}"
+			},
+			"commit": "コミット：${ref}",
+			"noGit": "git がインストールされていません。",
+			"noRepo": "git リポジトリではありません。",
+			"remote": "リモート：${ref}",
+			"status": {
+				"title": "ステータス：${status}",
+				"upToDate": "最新",
+				"behind": "リモートより遅れている（更新あり）",
+				"ahead": "リモートより先行",
+				"diverged": "リモートと分岐",
+				"fetchFailed": "取得できませんでした",
+				"detachedNoCompare": "切り離し（リモート比較不可）"
+			}
+		}
+	}
+}
