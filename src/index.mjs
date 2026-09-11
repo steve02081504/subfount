@@ -26,6 +26,7 @@ import {
 import { collectDeviceInfo, generateDeviceId } from './device.mjs'
 import { createRunCodeHandler, createShellExecHandler } from './handlers.mjs'
 import { createHostAssist, DEVICE_INFO_INTERVAL_MS, readInfraPolicy } from './host.mjs'
+import { killProcessTree } from './process.mjs'
 
 /** 主机断开 / 认证失败后的重连延迟（毫秒）。 */
 const RECONNECT_DELAY_MS = 5000
@@ -219,6 +220,8 @@ async function connectViaP2P() {
 			run_code: [null, 'getRunCode'],
 			callback: ['sendCallback', null],
 			shell_exec: [null, 'getShellExec'],
+			shell_spawned: ['sendShellSpawned', null],
+			kill: [null, 'getKill'],
 			infra: [null, 'getInfra'],
 		}
 
@@ -265,6 +268,10 @@ async function connectViaP2P() {
 		}
 		actions.getRunCode(handleAuthenticatedRequest(handleRunCode))
 		actions.getShellExec(handleAuthenticatedRequest(handleShellExec))
+		actions.getKill(handleAuthenticatedRequest((message) => {
+			const pid = message.pid
+			if (pid) killProcessTree(pid)
+		}))
 
 		room.onPeerJoin((peerId) => {
 			if (config.hostNodeHash && peerId !== config.hostNodeHash) return
