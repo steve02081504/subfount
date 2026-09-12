@@ -25,7 +25,7 @@
 		"npm:node-os-utils": "npm:node-os-utils@2.0.4",
 		"npm:@steve02081504/async-eval": "npm:@steve02081504/async-eval@^0.0.15",
 		"npm:@steve02081504/exec": "npm:@steve02081504/exec@^0.0.8",
-		"npm:@steve02081504/fount-p2p": "npm:@steve02081504/fount-p2p@^0.0.41"
+		"npm:@steve02081504/fount-p2p": "npm:@steve02081504/fount-p2p@^0.0.43"
 	},
 	"lint": {
 		"rules": {
