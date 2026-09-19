@@ -1,5 +1,5 @@
 ﻿#!pwsh
-#_pragma title "subfount"
+#_pragma Resources.Title "subfount"
 # subfount irm|iex 引导器
 # 用法: irm <url> | iex
 # 安装 subfount 到 SUBF_DIR，自更新引导器后转发给 run.bat。
