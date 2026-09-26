@@ -12,7 +12,7 @@ function script:Get-SystemLocales {
 
 # 从 src/locales/list.csv 获取可用区域设置
 function script:Get-AvailableLocales {
-	$localeListFile = Join-Path $SUBF_DIR 'src/locales/list.csv'
+	$localeListFile = Join-Path $SUBFOUNT_DIR 'src/locales/list.csv'
 	if (Test-Path $localeListFile) {
 		try {
 			return Import-Csv $localeListFile | Select-Object -ExpandProperty lang
@@ -48,15 +48,15 @@ function script:Get-BestLocale($preferredLocales, $availableLocales) {
 
 # 加载本地化数据
 function script:Import-LocaleData {
-	if (-not $env:SUBF_LOCALE) {
+	if (-not $env:SUBFOUNT_LOCALE) {
 		$systemLocales = Get-SystemLocales
 		$availableLocales = Get-AvailableLocales
-		$env:SUBF_LOCALE = Get-BestLocale -preferredLocales $systemLocales -availableLocales $availableLocales
+		$env:SUBFOUNT_LOCALE = Get-BestLocale -preferredLocales $systemLocales -availableLocales $availableLocales
 	}
-	$localeFile = Join-Path $SUBF_DIR "src/locales/$($env:SUBF_LOCALE).json"
+	$localeFile = Join-Path $SUBFOUNT_DIR "src/locales/$($env:SUBFOUNT_LOCALE).json"
 	if (-not (Test-Path $localeFile)) {
-		$env:SUBF_LOCALE = 'en-UK'
-		$localeFile = Join-Path $SUBF_DIR "src/locales/en-UK.json"
+		$env:SUBFOUNT_LOCALE = 'en-UK'
+		$localeFile = Join-Path $SUBFOUNT_DIR "src/locales/en-UK.json"
 	}
 
 	try {

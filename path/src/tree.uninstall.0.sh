@@ -2,7 +2,7 @@
 # Prefer sending user data to the trash/recycle bin when a trash-capable tool is
 # available, so the data survives removal; otherwise it is deleted with the tree.
 trash_subfount_data() {
-	local data_dir="$SUBF_DIR/data"
+	local data_dir="$SUBFOUNT_DIR/data"
 	[ -d "$data_dir" ] || return 0
 	for cmd in trash gio trash-put; do
 		if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -30,8 +30,8 @@ set_title "𝓈"
 write_taskbar_progress 75
 set_title ""
 write_taskbar_progress 90
-rm -rf "$SUBF_DIR"
-parent_dir=$(dirname "$SUBF_DIR")
+rm -rf "$SUBFOUNT_DIR"
+parent_dir=$(dirname "$SUBFOUNT_DIR")
 while rmdir "$parent_dir" 2>/dev/null; do
 	parent_dir=$(dirname "$parent_dir")
 done

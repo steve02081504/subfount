@@ -23,6 +23,6 @@
 			Remove-Item "$env:TEMP/winget.msixbundle" -Force -ErrorAction SilentlyContinue
 		}
 	}
-	Set-Content "$SUBF_DIR/data/installer/auto_installed_winget" '1'
+	Set-Content "$SUBFOUNT_DIR/data/installer/auto_installed_winget" '1'
 	RefreshPath
 }

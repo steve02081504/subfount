@@ -4,8 +4,8 @@ if (!(Get-Command git -ErrorAction SilentlyContinue)) {
 	Test-Winget
 	if (Get-Command winget -ErrorAction SilentlyContinue) {
 		winget install --id Git.Git -e --source winget
-		New-Item -Path "$SUBF_DIR/data/installer" -ItemType Directory -Force | Out-Null
-		Set-Content "$SUBF_DIR/data/installer/auto_installed_git" '1'
+		New-Item -Path "$SUBFOUNT_DIR/data/installer" -ItemType Directory -Force | Out-Null
+		Set-Content "$SUBFOUNT_DIR/data/installer/auto_installed_git" '1'
 	}
 	else {
 		Write-Host (Get-I18n -key 'git.installFailedWinget')
@@ -22,7 +22,7 @@ function script:invoke_repo_git {
 	$env:GIT_TERMINAL_PROMPT = '0'
 	$env:GIT_OPTIONAL_LOCKS = '0'
 	try {
-		& git -C "$SUBF_DIR" @args
+		& git -C "$SUBFOUNT_DIR" @args
 	}
 	finally {
 		if ($null -ne $prevPrompt) { $env:GIT_TERMINAL_PROMPT = $prevPrompt }
@@ -102,7 +102,7 @@ function script:git_fetch_pull_request($Pr) {
 	git_fetch_with_fallback "+refs/pull/${Pr}/head:refs/remotes/origin/pr/${Pr}"
 }
 
-# 修复缺失/损坏的 $SUBF_DIR 仓库：初始化、配置 origin，然后用 CN/KP/RU 镜像回退
+# 修复缺失/损坏的 $SUBFOUNT_DIR 仓库：初始化、配置 origin，然后用 CN/KP/RU 镜像回退
 # 和低速超时拉取 master（与 runner 安装器一致）。
 # 拉取成功后 origin 保留指向实际拉取到的那个 URL。
 function script:git_supplement_repo {
@@ -112,7 +112,7 @@ function script:git_supplement_repo {
 		$urls += "https://gh-proxy.org/github.com/steve02081504/subfount.git"
 		$urls += "https://gitclone.com/github.com/steve02081504/subfount.git"
 	}
-	$hadGit = Test-Path -LiteralPath "$SUBF_DIR/.git"
+	$hadGit = Test-Path -LiteralPath "$SUBFOUNT_DIR/.git"
 	invoke_repo_git init -b master
 	if ($LastExitCode -ne 0) { return }
 	invoke_repo_git config core.autocrlf false
@@ -135,7 +135,7 @@ function script:git_supplement_repo {
 	# 所有配置的拉取都失败了：撤销本次调用创建的 .git，以便下次运行时调用方
 	# 可重试完整的源码序列。绝不触碰已存在的仓库。
 	if (-not $hadGit) {
-		Remove-Item -LiteralPath "$SUBF_DIR/.git" -Recurse -Force -ErrorAction SilentlyContinue
+		Remove-Item -LiteralPath "$SUBFOUNT_DIR/.git" -Recurse -Force -ErrorAction SilentlyContinue
 	}
 	$global:LastExitCode = 1
 }
@@ -168,7 +168,7 @@ function script:git_fetch_with_fallback {
 function script:git_backup_uncommitted {
 	$global:LastExitCode = 0
 	if (-not (Get-Command git -ErrorAction SilentlyContinue)) { return }
-	if (-not (Test-Path -LiteralPath "$SUBF_DIR/.git")) { return }
+	if (-not (Test-Path -LiteralPath "$SUBFOUNT_DIR/.git")) { return }
 	$status = invoke_repo_git status --porcelain
 	if (-not $status) { return }
 
@@ -322,10 +322,10 @@ function script:subfount_upgrade {
 		Write-Host (Get-I18n -key 'git.notInstalledSkippingPull')
 		return
 	}
-	if ($SUBF_DIR -notin $(git config --global --get-all safe.directory)) {
-		git config --global --add safe.directory "$SUBF_DIR"
+	if ($SUBFOUNT_DIR -notin $(git config --global --get-all safe.directory)) {
+		git config --global --add safe.directory "$SUBFOUNT_DIR"
 	}
-	if (!(Test-Path -Path "$SUBF_DIR/.git")) {
+	if (!(Test-Path -Path "$SUBFOUNT_DIR/.git")) {
 		Write-Host (Get-I18n -key 'git.repoNotFound')
 		Write-Host (Get-I18n -key 'git.fetchingAndResetting')
 		git_supplement_repo
@@ -442,7 +442,7 @@ function script:subfount_show_version {
 		$global:LastExitCode = 1
 		return
 	}
-	if (!(Test-Path -LiteralPath "$SUBF_DIR/.git")) {
+	if (!(Test-Path -LiteralPath "$SUBFOUNT_DIR/.git")) {
 		Write-Warning (Get-I18n -key 'version.noRepo')
 		$global:LastExitCode = 1
 		return
@@ -460,7 +460,7 @@ function script:subfount_show_version {
 	subfount_print_version_branch $branch
 	Write-Host (Get-I18n -key 'version.commit' -params @{ ref = $commitHash })
 
-	if (Test-Path -LiteralPath "$SUBF_DIR/.noupdate") {
+	if (Test-Path -LiteralPath "$SUBFOUNT_DIR/.noupdate") {
 		Write-Host (Get-I18n -key 'version.autoUpdatePaused')
 	}
 

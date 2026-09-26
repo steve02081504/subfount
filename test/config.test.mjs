@@ -9,7 +9,7 @@ import {
 } from '../src/config.mjs'
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'subfount-test-'))
-process.env.SUBF_DATA_DIR = tmpDir
+process.env.SUBFOUNT_DATA_DIR = tmpDir
 
 Deno.test('loadConfig：无文件时返回默认配置', () => {
 	assert.deepEqual(loadConfig(), DEFAULT_CONFIG)

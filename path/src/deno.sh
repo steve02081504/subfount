@@ -87,10 +87,10 @@ install_deno_from_github_zip() {
 	get_i18n 'deno.installFailedFallback'
 	install_package "unzip" "unzip" || return 1
 	install_package "curl" "curl" || return 1
-	mkdir -p "$SUBF_DIR/path"
+	mkdir -p "$SUBFOUNT_DIR/path"
 	curl -fL -o /tmp/deno.zip "${base}${zip_name}" || return 1
-	unzip -o /tmp/deno.zip -d "$SUBF_DIR/path" || return 1
-	chmod +x "$SUBF_DIR/path/deno"
+	unzip -o /tmp/deno.zip -d "$SUBFOUNT_DIR/path" || return 1
+	chmod +x "$SUBFOUNT_DIR/path/deno"
 	rm -f /tmp/deno.zip
 }
 
@@ -119,7 +119,7 @@ deno_on_path() {
 }
 
 install_deno() {
-	export PATH="$HOME/.deno/bin:$SUBF_DIR/path:$PATH"
+	export PATH="$HOME/.deno/bin:$SUBFOUNT_DIR/path:$PATH"
 	hash -r 2>/dev/null || true
 	deno_on_path && return 0
 
@@ -131,11 +131,11 @@ install_deno() {
 	else
 		get_i18n 'deno.missing'
 		install_deno_from_official_script || true
-		export PATH="$HOME/.deno/bin:$SUBF_DIR/path:$PATH"
+		export PATH="$HOME/.deno/bin:$SUBFOUNT_DIR/path:$PATH"
 		hash -r 2>/dev/null || true
 		deno_on_path && return 0
 		install_deno_from_github_zip || true
-		export PATH="$HOME/.deno/bin:$SUBF_DIR/path:$PATH"
+		export PATH="$HOME/.deno/bin:$SUBFOUNT_DIR/path:$PATH"
 		hash -r 2>/dev/null || true
 	fi
 
@@ -143,14 +143,14 @@ install_deno() {
 		print_i18n_red 'deno.isRequired' >&2
 		exit 1
 	fi
-	mkdir -p "$(dirname "$SUBF_AUTO_INSTALLED_DENO_FLAG")"
-	touch "$SUBF_AUTO_INSTALLED_DENO_FLAG"
+	mkdir -p "$(dirname "$SUBFOUNT_AUTO_INSTALLED_DENO_FLAG")"
+	touch "$SUBFOUNT_AUTO_INSTALLED_DENO_FLAG"
 }
 
 deno_pinned_spec() {
-	if [ -f "$SUBF_DIR/.deno-version" ]; then
+	if [ -f "$SUBFOUNT_DIR/.deno-version" ]; then
 		local spec
-		spec=$(awk 'NR==1{ sub(/^[[:space:]]+/, ""); sub(/[[:space:]]+$/, ""); print }' "$SUBF_DIR/.deno-version")
+		spec=$(awk 'NR==1{ sub(/^[[:space:]]+/, ""); sub(/[[:space:]]+$/, ""); print }' "$SUBFOUNT_DIR/.deno-version")
 		if [ -n "$spec" ]; then
 			printf '%s\n' "$spec"
 		fi
@@ -245,7 +245,7 @@ base_deno_upgrade() {
 }
 
 deno_upgrade() {
-	local upgraded_flag="$SUBF_DIR/data/installer/deno_upgraded"
+	local upgraded_flag="$SUBFOUNT_DIR/data/installer/deno_upgraded"
 	if ! base_deno_upgrade "$@"; then
 		return
 	fi

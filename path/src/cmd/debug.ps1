@@ -2,7 +2,7 @@
 	bootstrap_full @args
 	try {
 		$rest = @($args | Select-Object -Skip 1)
-		& (Join-Path $SUBF_DIR 'path/subfount.ps1') keepalive debug @rest
+		& (Join-Path $SUBFOUNT_DIR 'path/subfount.ps1') keepalive debug @rest
 	}
 	finally {
 		Write-TaskbarProgressClear

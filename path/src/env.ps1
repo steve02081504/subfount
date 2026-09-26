@@ -24,14 +24,14 @@ function script:in_container { (in_docker) -or (in_termux) }
 # subfount 路径设置
 if (!(Get-Command subfount.ps1 -ErrorAction SilentlyContinue)) {
 	$path = $env:PATH -split ';'
-	if ($path -notcontains "$SUBF_DIR\path") {
-		$path += "$SUBF_DIR\path"
+	if ($path -notcontains "$SUBFOUNT_DIR\path") {
+		$path += "$SUBFOUNT_DIR\path"
 	}
 	$path = $path -join ';'
 	$UserPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
 	$UserPath = $UserPath -split ';'
-	if ($UserPath -notcontains "$SUBF_DIR\path") {
-		$UserPath += "$SUBF_DIR\path"
+	if ($UserPath -notcontains "$SUBFOUNT_DIR\path") {
+		$UserPath += "$SUBFOUNT_DIR\path"
 	}
 	$UserPath = $UserPath -join ';'
 	[System.Environment]::SetEnvironmentVariable('PATH', $UserPath, [System.EnvironmentVariableTarget]::User)

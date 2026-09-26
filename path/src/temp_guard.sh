@@ -18,7 +18,7 @@ is_in_temp_dir() {
 
 # Call early with the first command argument; exits if in a temp dir (except for remove)
 check_temp_guard() {
-	if [ "${1:-}" != "remove" ] && is_in_temp_dir "$SUBF_DIR"; then
+	if [ "${1:-}" != "remove" ] && is_in_temp_dir "$SUBFOUNT_DIR"; then
 		get_i18n 'tempDir.blocked' >&2
 		exit 1
 	fi

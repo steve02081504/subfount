@@ -2,8 +2,8 @@
 # live on an external/shared mount (symlink/junction or VM shared folder) so the
 # user is reminded that removal will also delete the real machine's copy.
 function script:Test-SubfRemoveExternal {
-	if (-not (Test-Path -LiteralPath $SUBF_DIR)) { return $false }
-	$item = Get-Item -LiteralPath $SUBF_DIR -Force -ErrorAction SilentlyContinue
+	if (-not (Test-Path -LiteralPath $SUBFOUNT_DIR)) { return $false }
+	$item = Get-Item -LiteralPath $SUBFOUNT_DIR -Force -ErrorAction SilentlyContinue
 	if ($item -and $item.LinkType) {
 		$script:SubfRemoveExternalTarget = $item.Target
 		return $true
@@ -14,7 +14,7 @@ function script:Test-SubfRemoveExternal {
 			$parts = $line -split '\s+'
 			if ($parts.Count -lt 3) { continue }
 			$mountPoint = $parts[1] -replace '\\040', ' '
-			if ($SUBF_DIR.StartsWith($mountPoint, [StringComparison]::OrdinalIgnoreCase)) {
+			if ($SUBFOUNT_DIR.StartsWith($mountPoint, [StringComparison]::OrdinalIgnoreCase)) {
 				if (-not $best -or $mountPoint.Length -gt $best.MountPoint.Length) {
 					$best = [PSCustomObject]@{ MountPoint = $mountPoint; Type = $parts[2] }
 				}
@@ -38,15 +38,15 @@ function script:cmd_remove {
 	trap_terminal_teardown
 	$force = $args -contains '--force'
 	if (Test-SubfRemoveExternal) {
-		Write-Host (Get-I18n -key 'remove.externalMountWarning' -params @{ path = $SUBF_DIR; target = $script:SubfRemoveExternalTarget }) -ForegroundColor Red
+		Write-Host (Get-I18n -key 'remove.externalMountWarning' -params @{ path = $SUBFOUNT_DIR; target = $script:SubfRemoveExternalTarget }) -ForegroundColor Red
 	}
 	if (-not $force) {
 		if (-not (Test-SubfConsoleInput)) {
-			$Host.UI.WriteErrorLine((Get-I18n -key 'remove.nonInteractiveRequiresForce' -params @{ path = $SUBF_DIR }))
+			$Host.UI.WriteErrorLine((Get-I18n -key 'remove.nonInteractiveRequiresForce' -params @{ path = $SUBFOUNT_DIR }))
 			terminal_teardown
 			exit 1
 		}
-		Write-Host (Get-I18n -key 'remove.confirmPrompt' -params @{ path = $SUBF_DIR }) -ForegroundColor Yellow
+		Write-Host (Get-I18n -key 'remove.confirmPrompt' -params @{ path = $SUBFOUNT_DIR }) -ForegroundColor Yellow
 		Write-Host -NoNewline (Get-I18n -key 'remove.yn')
 		$key = [Console]::ReadKey($true)
 		Write-Host

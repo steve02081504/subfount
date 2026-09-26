@@ -5,12 +5,12 @@ INSTALLED_SYSTEM_PACKAGES_ARRAY=()
 INSTALLED_PACMAN_PACKAGES_ARRAY=()
 
 load_installed_packages() {
-	mkdir -p "$SUBF_INSTALLER_DATA_DIR"
-	if [[ -f "$SUBF_INSTALLED_SYSTEM_PACKAGES_FILE" ]]; then
-		IFS=';' read -r -a INSTALLED_SYSTEM_PACKAGES_ARRAY <<<"$(tr -d '\n' <"$SUBF_INSTALLED_SYSTEM_PACKAGES_FILE")"
+	mkdir -p "$SUBFOUNT_INSTALLER_DATA_DIR"
+	if [[ -f "$SUBFOUNT_INSTALLED_SYSTEM_PACKAGES_FILE" ]]; then
+		IFS=';' read -r -a INSTALLED_SYSTEM_PACKAGES_ARRAY <<<"$(tr -d '\n' <"$SUBFOUNT_INSTALLED_SYSTEM_PACKAGES_FILE")"
 	fi
-	if [[ -f "$SUBF_INSTALLED_PACMAN_PACKAGES_FILE" ]]; then
-		IFS=';' read -r -a INSTALLED_PACMAN_PACKAGES_ARRAY <<<"$(tr -d '\n' <"$SUBF_INSTALLED_PACMAN_PACKAGES_FILE")"
+	if [[ -f "$SUBFOUNT_INSTALLED_PACMAN_PACKAGES_FILE" ]]; then
+		IFS=';' read -r -a INSTALLED_PACMAN_PACKAGES_ARRAY <<<"$(tr -d '\n' <"$SUBFOUNT_INSTALLED_PACMAN_PACKAGES_FILE")"
 	fi
 	if [[ -n "$FOUNT_AUTO_INSTALLED_PACKAGES" ]]; then
 		IFS=';' read -r -a FOUNT_AUTO_INSTALLED_PACKAGES_ARRAY <<<"$FOUNT_AUTO_INSTALLED_PACKAGES"
@@ -20,21 +20,21 @@ load_installed_packages() {
 		(
 			IFS=';'
 			echo "${INSTALLED_SYSTEM_PACKAGES_ARRAY[*]}"
-		) >"$SUBF_INSTALLED_SYSTEM_PACKAGES_FILE"
+		) >"$SUBFOUNT_INSTALLED_SYSTEM_PACKAGES_FILE"
 	fi
 }
 
 save_installed_packages() {
-	mkdir -p "$SUBF_INSTALLER_DATA_DIR"
+	mkdir -p "$SUBFOUNT_INSTALLER_DATA_DIR"
 	(
 		IFS=';'
 		echo "${INSTALLED_SYSTEM_PACKAGES_ARRAY[*]}"
-	) >"$SUBF_INSTALLED_SYSTEM_PACKAGES_FILE"
+	) >"$SUBFOUNT_INSTALLED_SYSTEM_PACKAGES_FILE"
 	if [[ $IN_TERMUX -eq 1 ]]; then
 		(
 			IFS=';'
 			echo "${INSTALLED_PACMAN_PACKAGES_ARRAY[*]}"
-		) >"$SUBF_INSTALLED_PACMAN_PACKAGES_FILE"
+		) >"$SUBFOUNT_INSTALLED_PACMAN_PACKAGES_FILE"
 	fi
 }
 
@@ -57,11 +57,11 @@ add_package_to_tracker() {
 
 # --- 包管理器状态：跨安装共享目录，含锁与刷新节流 ---
 pkg_state_dir() {
-	printf '%s' "${SUBF_PKG_STATE_DIR:-${TMPDIR:-${TEMP:-/tmp}}/subfount/package}"
+	printf '%s' "${SUBFOUNT_PKG_STATE_DIR:-${TMPDIR:-${TEMP:-/tmp}}/subfount/package}"
 }
 
 pkg_refresh_interval() {
-	printf '%s' "${SUBF_PKG_REFRESH_INTERVAL:-600}"
+	printf '%s' "${SUBFOUNT_PKG_REFRESH_INTERVAL:-600}"
 }
 
 # 解析符号链接得到真实路径（兼容 BSD readlink，不用 readlink -f）。
@@ -149,18 +149,18 @@ pkg_lock_acquire() {
 			fi
 		fi
 		retry_count=$((retry_count + 1))
-		[ "$retry_count" -ge $(( ${SUBF_PKG_LOCK_TIMEOUT:-300} * 10 )) ] && return 1
+		[ "$retry_count" -ge $(( ${SUBFOUNT_PKG_LOCK_TIMEOUT:-300} * 10 )) ] && return 1
 		sleep 0.1 2>/dev/null || sleep 1
 	done
 	printf '%s\n' "$$" >"$pkg_lock_dir/pid"
-	SUBF_PKG_LOCK_DIR="$pkg_lock_dir"
+	SUBFOUNT_PKG_LOCK_DIR="$pkg_lock_dir"
 	return 0
 }
 
 pkg_lock_release() {
-	[ -n "${SUBF_PKG_LOCK_DIR:-}" ] || return 0
-	rm -rf "$SUBF_PKG_LOCK_DIR"
-	unset SUBF_PKG_LOCK_DIR
+	[ -n "${SUBFOUNT_PKG_LOCK_DIR:-}" ] || return 0
+	rm -rf "$SUBFOUNT_PKG_LOCK_DIR"
+	unset SUBFOUNT_PKG_LOCK_DIR
 }
 
 # 在锁内执行命令。

@@ -2,7 +2,7 @@
 # Splat is `@name` / `@args` — `@(...)` is array subexpression and passes one nested argument.
 function script:Invoke-SubfFromCmd {
 	$rest = @($args | Select-Object -Skip 1)
-	& (Join-Path $SUBF_DIR 'path/subfount.ps1') @rest
+	& (Join-Path $SUBFOUNT_DIR 'path/subfount.ps1') @rest
 }
 
 function script:handle_docker_passthrough {
@@ -124,7 +124,7 @@ function script:handle_unix_passthrough {
 			}
 		}
 		install_package "bash" @("bash", "gnu-bash")
-		bash $SUBF_DIR/path/subfount.sh @args
+		bash $SUBFOUNT_DIR/path/subfount.sh @args
 		exit $LastExitCode
 	}
 }

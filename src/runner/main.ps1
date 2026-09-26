@@ -2,10 +2,10 @@
 #_pragma Resources.Title "subfount"
 # subfount irm|iex 引导器
 # 用法: irm <url> | iex
-# 安装 subfount 到 SUBF_DIR，自更新引导器后转发给 run.bat。
+# 安装 subfount 到 SUBFOUNT_DIR，自更新引导器后转发给 run.bat。
 
-if (!$env:SUBF_BRANCH) {
-	$env:SUBF_BRANCH = "master"
+if (!$env:SUBFOUNT_BRANCH) {
+	$env:SUBFOUNT_BRANCH = "master"
 }
 
 # 任务栏进度
@@ -55,7 +55,7 @@ function Set-MissingVariablesForWindowsPowershell {
 Set-MissingVariablesForWindowsPowershell
 
 if (!$IsWindows) {
-	$script:SubfPkgStateDir = $env:SUBF_PKG_STATE_DIR
+	$script:SubfPkgStateDir = $env:SUBFOUNT_PKG_STATE_DIR
 	if (-not $script:SubfPkgStateDir) {
 		$base = if ($env:TMPDIR) { $env:TMPDIR } elseif ($env:TEMP) { $env:TEMP } else { '/tmp' }
 		$script:SubfPkgStateDir = Join-Path $base (Join-Path 'subfount' 'package')
@@ -65,7 +65,7 @@ if (!$IsWindows) {
 		if (-not (Test-Path -LiteralPath $file)) { return $true }
 		$last = Get-Content -LiteralPath $file -Raw -ErrorAction SilentlyContinue
 		$last = if ($last) { try { [long]$last.Trim() } catch { 0 } } else { 0 }
-		$refreshInterval = if ($env:SUBF_PKG_REFRESH_INTERVAL) { [long]$env:SUBF_PKG_REFRESH_INTERVAL } else { 600 }
+		$refreshInterval = if ($env:SUBFOUNT_PKG_REFRESH_INTERVAL) { [long]$env:SUBFOUNT_PKG_REFRESH_INTERVAL } else { 600 }
 		return (([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $last) -ge $refreshInterval)
 	}
 	function Set-SubfPkgRefresh([string]$Manager) {
@@ -76,7 +76,7 @@ if (!$IsWindows) {
 		New-Item -Path $script:SubfPkgStateDir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 		$lockDir = Join-Path $script:SubfPkgStateDir "$Manager.lock"
 		$pidFile = Join-Path $lockDir 'pid'
-		$timeoutMs = if ($env:SUBF_PKG_LOCK_TIMEOUT) { [int]$env:SUBF_PKG_LOCK_TIMEOUT * 1000 } else { 300000 }
+		$timeoutMs = if ($env:SUBFOUNT_PKG_LOCK_TIMEOUT) { [int]$env:SUBFOUNT_PKG_LOCK_TIMEOUT * 1000 } else { 300000 }
 		$sw = [System.Diagnostics.Stopwatch]::StartNew()
 		while ($true) {
 			try {
@@ -218,12 +218,12 @@ if (!$IsWindows) {
 	}
 	install_package "bash" @("bash", "gnu-bash")
 	Write-TaskbarProgress -Percent 5
-	Invoke-RestMethod https://raw.githubusercontent.com/steve02081504/subfount/refs/heads/$env:SUBF_BRANCH/src/runner/main.sh | bash -s -- $args
+	Invoke-RestMethod https://raw.githubusercontent.com/steve02081504/subfount/refs/heads/$env:SUBFOUNT_BRANCH/src/runner/main.sh | bash -s -- $args
 	exit $LastExitCode
 }
 
-if (!$env:SUBF_DIR) {
-	$env:SUBF_DIR = "$env:LOCALAPPDATA/subfount"
+if (!$env:SUBFOUNT_DIR) {
+	$env:SUBFOUNT_DIR = "$env:LOCALAPPDATA/subfount"
 }
 
 $forwardedArgs = @($args)
@@ -283,7 +283,7 @@ function Install-SubfountTree {
 }
 
 function Import-SubfountLocale([string]$Dir) {
-	$script:SUBF_DIR = $Dir
+	$script:SUBFOUNT_DIR = $Dir
 	. (Join-Path $Dir 'path/src/i18n.ps1')
 }
 
@@ -292,15 +292,15 @@ $canSelfModify = $PSCommandPath -and (Test-Path -LiteralPath $PSCommandPath -Pat
 try {
 	if (!(Get-Command subfount.ps1 -ErrorAction Ignore)) {
 		Write-TaskbarProgress -Percent 0
-		Install-SubfountTree -Dir $env:SUBF_DIR -Branch $env:SUBF_BRANCH
+		Install-SubfountTree -Dir $env:SUBFOUNT_DIR -Branch $env:SUBFOUNT_BRANCH
 		Write-TaskbarProgress -Percent 50
-		if (!(Test-Path $env:SUBF_DIR)) {
+		if (!(Test-Path $env:SUBFOUNT_DIR)) {
 			Write-TaskbarProgressError
 			$Host.UI.WriteErrorLine("Failed to install subfount")
 			exit 1
 		}
-		$Script:subfountDir = $env:SUBF_DIR
-		Import-SubfountLocale $env:SUBF_DIR
+		$Script:subfountDir = $env:SUBFOUNT_DIR
+		Import-SubfountLocale $env:SUBFOUNT_DIR
 		Write-TaskbarProgress -Percent 70
 	}
 	else {

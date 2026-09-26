@@ -3,7 +3,7 @@
 	bootstrap_server @args
 	$commandArguments = @($args | Select-Object -Skip 1)
 
-	$env:SUBF_KEEPALIVE = 1
+	$env:SUBFOUNT_KEEPALIVE = 1
 	try {
 		Register-SubfApplicationRestart
 		$startTime = Get-Date
@@ -31,14 +31,14 @@
 				}
 
 				if ($restart_timestamps.Count -ge 7) {
-					if (Test-Path -Path "$SUBF_DIR/.noautoinit") {
+					if (Test-Path -Path "$SUBFOUNT_DIR/.noautoinit") {
 						Write-Warning (Get-I18n -key 'keepalive.autoInitDisabled')
 						exit 1
 					}
 					Write-Warning (Get-I18n -key 'keepalive.restartingTooFast')
 					$restart_timestamps.Clear()
 
-					& (Join-Path $SUBF_DIR 'path/subfount.ps1') init
+					& (Join-Path $SUBFOUNT_DIR 'path/subfount.ps1') init
 					if ($LastExitCode -ne 0) {
 						Write-Error (Get-I18n -key 'keepalive.initFailed')
 						exit 1
@@ -54,7 +54,7 @@
 		}
 	}
 	finally {
-		Remove-Item Env:\SUBF_KEEPALIVE -Force -ErrorAction Ignore
+		Remove-Item Env:\SUBFOUNT_KEEPALIVE -Force -ErrorAction Ignore
 		Unregister-SubfApplicationRestart
 		Write-TaskbarProgressClear
 	}

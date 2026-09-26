@@ -73,14 +73,14 @@ open_controlling_tty() {
 
 # Restore title + clear taskbar progress on EXIT/INT/TERM. Optional extra cleanup function name.
 trap_terminal_teardown() {
-	SUBF_TERMINAL_TEARDOWN_TITLE=$(get_title)
-	SUBF_TERMINAL_TEARDOWN_HOOK="${1:-}"
+	SUBFOUNT_TERMINAL_TEARDOWN_TITLE=$(get_title)
+	SUBFOUNT_TERMINAL_TEARDOWN_HOOK="${1:-}"
 	# shellcheck disable=SC2329
 	_terminal_teardown() {
 		write_taskbar_progress_clear
-		set_title "$SUBF_TERMINAL_TEARDOWN_TITLE"
-		if [ -n "${SUBF_TERMINAL_TEARDOWN_HOOK:-}" ]; then
-			"$SUBF_TERMINAL_TEARDOWN_HOOK"
+		set_title "$SUBFOUNT_TERMINAL_TEARDOWN_TITLE"
+		if [ -n "${SUBFOUNT_TERMINAL_TEARDOWN_HOOK:-}" ]; then
+			"$SUBFOUNT_TERMINAL_TEARDOWN_HOOK"
 		fi
 	}
 	trap '_terminal_teardown' EXIT INT TERM

@@ -1,5 +1,5 @@
 ﻿function script:debug_on {
-	$env:SUBF_DEBUG = $true
+	$env:SUBFOUNT_DEBUG = $true
 	if (Get-Command chrome -ErrorAction Ignore) {
 		$hasNodeDevtoolsWindow = Get-Process chrome -ErrorAction Ignore | Where-Object {
 			$title = $_.MainWindowTitle

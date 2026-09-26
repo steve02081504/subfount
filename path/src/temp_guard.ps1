@@ -20,7 +20,7 @@
 }
 
 function script:check_temp_guard($cmd) {
-	if ($cmd -ne 'remove' -and (is_in_temp_dir $SUBF_DIR)) {
+	if ($cmd -ne 'remove' -and (is_in_temp_dir $SUBFOUNT_DIR)) {
 		Write-Host (Get-I18n -key 'tempDir.blocked')
 		exit 1
 	}

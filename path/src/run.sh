@@ -2,7 +2,7 @@
 # Deno server runner + keepalive helpers
 
 handle_auto_reinitialization() {
-	if [ -f "$SUBF_DIR/.noautoinit" ]; then
+	if [ -f "$SUBFOUNT_DIR/.noautoinit" ]; then
 		print_i18n_yellow 'keepalive.autoInitDisabled' >&2
 		exit 1
 	fi
@@ -27,11 +27,11 @@ run() {
 	require unix/termux
 	termux_ensure_sensor_api
 	local v8_flags=""
-	if [[ -n "$SUBF_V8_FLAGS" ]]; then
-		v8_flags="$SUBF_V8_FLAGS"
+	if [[ -n "$SUBFOUNT_V8_FLAGS" ]]; then
+		v8_flags="$SUBFOUNT_V8_FLAGS"
 	fi
 	local heap_size_mb=100 config_path heap_size_bytes calculated_mb
-	config_path="$SUBF_DIR/data/config.json"
+	config_path="$SUBFOUNT_DIR/data/config.json"
 	if [ -f "$config_path" ] && command -v jq &>/dev/null; then
 		heap_size_bytes=$(jq -r '.prelaunch.heapSize // "0"' "$config_path")
 		calculated_mb=$(( (heap_size_bytes + 524288) / 1048576 ))
@@ -45,12 +45,12 @@ run() {
 		v8_flags="--initial-heap-size=${heap_size_mb}"
 	fi
 	write_taskbar_progress 10
-	if [ -z "$SUBF_START_TIME" ]; then
-		SUBF_START_TIME=$(timestamp)
+	if [ -z "$SUBFOUNT_START_TIME" ]; then
+		SUBFOUNT_START_TIME=$(timestamp)
 	fi
-	export SUBF_START_TIME
-	SUBF_DENO_START_TIME=$(timestamp)
-	export SUBF_DENO_START_TIME
+	export SUBFOUNT_START_TIME
+	SUBFOUNT_DENO_START_TIME=$(timestamp)
+	export SUBFOUNT_DENO_START_TIME
 	write_taskbar_progress 25
 	set_title "𝓯"
 	local boosted=0
@@ -60,20 +60,20 @@ run() {
 	if [[ "$OS_TYPE" = "Linux" ]] && command -v ionice >/dev/null 2>&1; then
 		ionice -c2 -n0 -p $$ >/dev/null 2>&1 || true
 	fi
-	export SUBF_STARTUP_PRIORITY_BOOST=1
-	if [[ ${SUBF_DEBUG:-0} -eq 1 ]]; then
-		run_deno run --allow-scripts --allow-all --inspect-brk -c "$SUBF_DIR/deno.json" --v8-flags="$v8_flags" "$SUBF_DIR/src/index.mjs" "$@"
+	export SUBFOUNT_STARTUP_PRIORITY_BOOST=1
+	if [[ ${SUBFOUNT_DEBUG:-0} -eq 1 ]]; then
+		run_deno run --allow-scripts --allow-all --inspect-brk -c "$SUBFOUNT_DIR/deno.json" --v8-flags="$v8_flags" "$SUBFOUNT_DIR/src/index.mjs" "$@"
 	else
-		run_deno run --allow-scripts --allow-all -c "$SUBF_DIR/deno.json" --v8-flags="$v8_flags" "$SUBF_DIR/src/index.mjs" "$@"
+		run_deno run --allow-scripts --allow-all -c "$SUBFOUNT_DIR/deno.json" --v8-flags="$v8_flags" "$SUBFOUNT_DIR/src/index.mjs" "$@"
 	fi
 	exit_code=$?
 	if [[ "$boosted" -eq 1 ]]; then
 		renice -n 0 -p $$ >/dev/null 2>&1 || true
 	fi
-	unset SUBF_STARTUP_PRIORITY_BOOST
+	unset SUBFOUNT_STARTUP_PRIORITY_BOOST
 	set_title "$original_title"
-	unset SUBF_START_TIME
-	unset SUBF_DENO_START_TIME
+	unset SUBFOUNT_START_TIME
+	unset SUBFOUNT_DENO_START_TIME
 	if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 130 ] && [ "$exit_code" -ne 131 ]; then
 		write_taskbar_progress_error
 	fi

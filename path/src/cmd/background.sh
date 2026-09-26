@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 cmd_background() {
 	require passthrough
-	export SUBF_BACKGROUND=1
+	export SUBFOUNT_BACKGROUND=1
 	handle_docker_termux_passthrough "$@"
 	shift
-	if [ -f "$SUBF_DIR/.nobackground" ]; then
+	if [ -f "$SUBFOUNT_DIR/.nobackground" ]; then
 		if command -v xterm &>/dev/null; then
 			xterm -e "$0" "$@" &
 		elif command -v gnome-terminal &>/dev/null; then
@@ -24,6 +24,6 @@ cmd_background() {
 	else
 		nohup "$0" "$@" >/dev/null 2>&1 &
 	fi
-	unset SUBF_BACKGROUND
+	unset SUBFOUNT_BACKGROUND
 	exit 0
 }

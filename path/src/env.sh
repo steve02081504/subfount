@@ -6,9 +6,9 @@ export C_GREEN='\033[0;32m'
 export C_YELLOW='\033[0;33m'
 
 # ANSI support detection (top-level, export so subshells inherit)
-SUBF_CONSOLE_ANSI=0
-[ -t 1 ] && SUBF_CONSOLE_ANSI=1
-export SUBF_CONSOLE_ANSI
+SUBFOUNT_CONSOLE_ANSI=0
+[ -t 1 ] && SUBFOUNT_CONSOLE_ANSI=1
+export SUBFOUNT_CONSOLE_ANSI
 
 # Environment detection
 IN_DOCKER=0
@@ -33,10 +33,10 @@ if [ "$IN_TERMUX" -eq 1 ]; then
 fi
 
 # Installer data paths (exported for packages.sh / deno.sh / uninstall hooks)
-export SUBF_INSTALLER_DATA_DIR="$SUBF_DIR/data/installer"
-export SUBF_INSTALLED_SYSTEM_PACKAGES_FILE="$SUBF_INSTALLER_DATA_DIR/auto_installed_system_packages"
-export SUBF_INSTALLED_PACMAN_PACKAGES_FILE="$SUBF_INSTALLER_DATA_DIR/auto_installed_pacman_packages"
-export SUBF_AUTO_INSTALLED_DENO_FLAG="$SUBF_INSTALLER_DATA_DIR/auto_installed_deno"
+export SUBFOUNT_INSTALLER_DATA_DIR="$SUBFOUNT_DIR/data/installer"
+export SUBFOUNT_INSTALLED_SYSTEM_PACKAGES_FILE="$SUBFOUNT_INSTALLER_DATA_DIR/auto_installed_system_packages"
+export SUBFOUNT_INSTALLED_PACMAN_PACKAGES_FILE="$SUBFOUNT_INSTALLER_DATA_DIR/auto_installed_pacman_packages"
+export SUBFOUNT_AUTO_INSTALLED_DENO_FLAG="$SUBFOUNT_INSTALLER_DATA_DIR/auto_installed_deno"
 
 # Best-effort Clash TUN enablement for users in restricted regions
 if echo "${LANG:-}" | grep -iqE "_(CN|KP|RU)|(^|-)(zh|ko|ru)(-|$)"; then

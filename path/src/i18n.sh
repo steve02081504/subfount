@@ -29,7 +29,7 @@ get_system_locales() {
 }
 
 get_available_locales() {
-	local locale_list_file="$SUBF_DIR/src/locales/list.csv"
+	local locale_list_file="$SUBFOUNT_DIR/src/locales/list.csv"
 	if [ -f "$locale_list_file" ]; then
 		tail -n +2 "$locale_list_file" | cut -d, -f1
 	else
@@ -71,22 +71,22 @@ get_best_locale() {
 	echo "en-UK"
 }
 
-# Callers must NOT export SUBF_LOCALE_DATA (avoid ARG_MAX on some Linux)
+# Callers must NOT export SUBFOUNT_LOCALE_DATA (avoid ARG_MAX on some Linux)
 # shellcheck disable=SC2120
 load_locale_data() {
-	if [ -z "$SUBF_LOCALE" ]; then
+	if [ -z "$SUBFOUNT_LOCALE" ]; then
 		local system_locales
 		system_locales=$(get_system_locales)
 		local available_locales
 		available_locales=$(get_available_locales)
-		SUBF_LOCALE=$(get_best_locale "$system_locales" "$available_locales")
-		export SUBF_LOCALE
+		SUBFOUNT_LOCALE=$(get_best_locale "$system_locales" "$available_locales")
+		export SUBFOUNT_LOCALE
 	fi
-	local locale_file="$SUBF_DIR/src/locales/$SUBF_LOCALE.json"
+	local locale_file="$SUBFOUNT_DIR/src/locales/$SUBFOUNT_LOCALE.json"
 	if [ ! -f "$locale_file" ]; then
-		SUBF_LOCALE="en-UK"
-		export SUBF_LOCALE
-		locale_file="$SUBF_DIR/src/locales/en-UK.json"
+		SUBFOUNT_LOCALE="en-UK"
+		export SUBFOUNT_LOCALE
+		locale_file="$SUBFOUNT_DIR/src/locales/en-UK.json"
 	fi
 	if ! command -v jq &>/dev/null; then
 		if command -v install_package &>/dev/null; then
@@ -100,7 +100,7 @@ load_locale_data() {
 	fi
 }
 
-i18n_supports_ansi() { [ "${SUBF_CONSOLE_ANSI:-0}" = "1" ]; }
+i18n_supports_ansi() { [ "${SUBFOUNT_CONSOLE_ANSI:-0}" = "1" ]; }
 
 i18n_format_param_value() {
 	local param_name="$1"
@@ -186,11 +186,11 @@ apply_i18n_backticks() {
 
 get_i18n() {
 	local key="$1"
-	if [ -z "$SUBF_LOCALE_DATA" ]; then
-		SUBF_LOCALE_DATA=$(load_locale_data)
+	if [ -z "$SUBFOUNT_LOCALE_DATA" ]; then
+		SUBFOUNT_LOCALE_DATA=$(load_locale_data)
 	fi
 	local translation
-	translation=$(printf '%s' "$SUBF_LOCALE_DATA" | jq -r --arg key "$key" 'getpath($key | split(".")) // $key')
+	translation=$(printf '%s' "$SUBFOUNT_LOCALE_DATA" | jq -r --arg key "$key" 'getpath($key | split(".")) // $key')
 
 	shift
 	while [ $# -gt 0 ]; do

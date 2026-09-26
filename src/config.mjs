@@ -22,11 +22,11 @@ export function getRootDir() {
 }
 
 /**
- * 返回数据目录（可用 SUBF_DATA_DIR 环境变量覆盖，便于测试隔离）。
+ * 返回数据目录（可用 SUBFOUNT_DATA_DIR 环境变量覆盖，便于测试隔离）。
  * @returns {string} 数据目录绝对路径
  */
 export function getDataDir() {
-	return process.env.SUBF_DATA_DIR || defaultDataDir
+	return process.env.SUBFOUNT_DATA_DIR || defaultDataDir
 }
 
 /**

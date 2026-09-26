@@ -2,8 +2,8 @@
 cmd_shutdown() {
 	require i18n terminal
 	trap_taskbar_clear
-	local pid_file="$SUBF_DIR/data/daemon.pid"
-	local stop_file="$SUBF_DIR/data/stop.request"
+	local pid_file="$SUBFOUNT_DIR/data/daemon.pid"
+	local stop_file="$SUBFOUNT_DIR/data/stop.request"
 	local pid i
 	pid=$(cat "$pid_file" 2>/dev/null)
 	if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then

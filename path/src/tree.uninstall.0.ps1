@@ -1,7 +1,7 @@
 ﻿# Remove subfount installation directory
 # Prefer sending user data to the Recycle Bin when available, so the data
 # survives removal; otherwise it is deleted with the tree.
-$dataPath = Join-Path $SUBF_DIR 'data'
+$dataPath = Join-Path $SUBFOUNT_DIR 'data'
 if (Test-Path -LiteralPath $dataPath) {
 	try {
 		Add-Type -AssemblyName Microsoft.VisualBasic -ErrorAction Stop
@@ -15,9 +15,9 @@ if (Test-Path -LiteralPath $dataPath) {
 	# 不做任何输出（有意），避免用户因为情绪上头而顺手清空回收站，增加用户在之后发现数据时的留存率。
 }
 Write-Host (Get-I18n -key 'remove.removing.subfount.installationDir')
-Remove-Item -Path $SUBF_DIR -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path $SUBFOUNT_DIR -Recurse -Force -ErrorAction SilentlyContinue
 # 只要父目录为空，继续删他妈的
-$parent = Split-Path -Parent $SUBF_DIR
+$parent = Split-Path -Parent $SUBFOUNT_DIR
 while ((Get-ChildItem $parent -ErrorAction Ignore | Measure-Object).Count -eq 0) {
 	Remove-Item -Path $parent -Recurse -Force -ErrorAction SilentlyContinue
 }

@@ -1,5 +1,5 @@
 ﻿function script:deno_pinned_spec {
-	$pinFile = Join-Path $SUBF_DIR '.deno-version'
+	$pinFile = Join-Path $SUBFOUNT_DIR '.deno-version'
 	if (Test-Path -LiteralPath $pinFile) {
 		$spec = Get-Content -LiteralPath $pinFile -TotalCount 1
 		if ($spec) { return $spec.Trim() }
@@ -9,7 +9,7 @@
 
 function script:deno_upgrade([string]$Channel) {
 	require pkg_common
-	$upgradedFlag = Join-Path $SUBF_DIR 'data/installer/deno_upgraded'
+	$upgradedFlag = Join-Path $SUBFOUNT_DIR 'data/installer/deno_upgraded'
 
 	$denoBinary = if (Get-Command deno -ErrorAction SilentlyContinue) { Resolve-SubfRealPath (Get-Command deno -ErrorAction SilentlyContinue).Source } else { $null }
 	$owner = if ($denoBinary) { Get-SubfPkgOwner $denoBinary } else { $null }
@@ -118,13 +118,13 @@ function script:install_deno {
 				"x86_64-unknown-linux-gnu.zip"
 			})
 		Invoke-WebRequest -Uri $url -OutFile "$env:TEMP/deno.zip"
-		Expand-Archive -Path "$env:TEMP/deno.zip" -DestinationPath "$SUBF_DIR/path"
+		Expand-Archive -Path "$env:TEMP/deno.zip" -DestinationPath "$SUBFOUNT_DIR/path"
 		Remove-Item -Path "$env:TEMP/deno.zip" -Force
-		$env:PATH = "$env:PATH;$SUBF_DIR/path"
+		$env:PATH = "$env:PATH;$SUBFOUNT_DIR/path"
 	}
 	if (Get-Command deno -ErrorAction SilentlyContinue) {
-		New-Item -Path "$SUBF_DIR/data/installer" -ItemType Directory -Force | Out-Null
-		Set-Content "$SUBF_DIR/data/installer/auto_installed_deno" '1'
+		New-Item -Path "$SUBFOUNT_DIR/data/installer" -ItemType Directory -Force | Out-Null
+		Set-Content "$SUBFOUNT_DIR/data/installer/auto_installed_deno" '1'
 		return
 	}
 	Write-Host (Get-I18n -key 'deno.isRequired')

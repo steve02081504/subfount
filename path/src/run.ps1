@@ -7,11 +7,11 @@
 	$originalTitle = Get-Title
 	Set-Title ""
 	$v8Flags = ""
-	if ($env:SUBF_V8_FLAGS) {
-		$v8Flags = $env:SUBF_V8_FLAGS
+	if ($env:SUBFOUNT_V8_FLAGS) {
+		$v8Flags = $env:SUBFOUNT_V8_FLAGS
 	}
 	$heapSizeMB = 100 # Default to 100MB
-	$configPath = Join-Path $SUBF_DIR 'data/config.json'
+	$configPath = Join-Path $SUBFOUNT_DIR 'data/config.json'
 	if (Test-Path $configPath) {
 		try {
 			$subfConfig = Get-Content $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -29,30 +29,30 @@
 	if ($v8Flags) { $v8Flags += ",--initial-heap-size=${heapSizeMB}" }
 	else { $v8Flags = "--initial-heap-size=${heapSizeMB}" }
 
-	if (-not $env:SUBF_START_TIME) {
-		$env:SUBF_START_TIME = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+	if (-not $env:SUBFOUNT_START_TIME) {
+		$env:SUBFOUNT_START_TIME = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
 	}
-	$env:SUBF_DENO_START_TIME = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+	$env:SUBFOUNT_DENO_START_TIME = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
 	Write-TaskbarProgress -Percent 25
 	Set-Title "𝓯"
 	$proc = [System.Diagnostics.Process]::GetCurrentProcess()
 	$prevPriority = $proc.PriorityClass
-	$env:SUBF_STARTUP_PRIORITY_BOOST = '1'
+	$env:SUBFOUNT_STARTUP_PRIORITY_BOOST = '1'
 	try { $proc.PriorityClass = [System.Diagnostics.ProcessPriorityClass]::AboveNormal } catch { <# ignore #> }
 	try {
-		if ($env:SUBF_DEBUG) {
-			deno run --allow-scripts --allow-all --inspect-brk -c "$SUBF_DIR/deno.json" --v8-flags="$v8Flags" "$SUBF_DIR/src/index.mjs" @args
+		if ($env:SUBFOUNT_DEBUG) {
+			deno run --allow-scripts --allow-all --inspect-brk -c "$SUBFOUNT_DIR/deno.json" --v8-flags="$v8Flags" "$SUBFOUNT_DIR/src/index.mjs" @args
 		}
 		else {
-			deno run --allow-scripts --allow-all -c "$SUBF_DIR/deno.json" --v8-flags="$v8Flags" "$SUBF_DIR/src/index.mjs" @args
+			deno run --allow-scripts --allow-all -c "$SUBFOUNT_DIR/deno.json" --v8-flags="$v8Flags" "$SUBFOUNT_DIR/src/index.mjs" @args
 		}
 	}
 	finally {
 		try { $proc.PriorityClass = $prevPriority } catch { <# ignore #> }
-		Remove-Item Env:\SUBF_STARTUP_PRIORITY_BOOST -Force -ErrorAction Ignore
+		Remove-Item Env:\SUBFOUNT_STARTUP_PRIORITY_BOOST -Force -ErrorAction Ignore
 		Set-Title $originalTitle
-		Remove-Item Env:\SUBF_START_TIME -Force -ErrorAction Ignore
-		Remove-Item Env:\SUBF_DENO_START_TIME -Force -ErrorAction Ignore
+		Remove-Item Env:\SUBFOUNT_START_TIME -Force -ErrorAction Ignore
+		Remove-Item Env:\SUBFOUNT_DENO_START_TIME -Force -ErrorAction Ignore
 		if ($LastExitCode -and $LastExitCode -ne 130) { Write-TaskbarProgressError }
 	}
 }

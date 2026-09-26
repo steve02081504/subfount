@@ -46,7 +46,7 @@ export function getAvailableLocales() {
  * @returns {string} 语言代码
  */
 export function getLocale() {
-	if (process.env.SUBF_LOCALE) return process.env.SUBF_LOCALE
+	if (process.env.SUBFOUNT_LOCALE) return process.env.SUBFOUNT_LOCALE
 	const available = getAvailableLocales()
 	for (const pref of systemLocales()) {
 		if (available.includes(pref)) return pref

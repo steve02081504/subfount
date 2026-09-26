@@ -1,13 +1,13 @@
 ﻿# 包管理器共享函数：状态目录、归属检测、按管理器文件锁、数据库刷新节流、管理器安装/升级。
 
 function script:Get-SubfPkgStateDir {
-	if ($env:SUBF_PKG_STATE_DIR) { return $env:SUBF_PKG_STATE_DIR }
+	if ($env:SUBFOUNT_PKG_STATE_DIR) { return $env:SUBFOUNT_PKG_STATE_DIR }
 	$base = if ($env:TMPDIR) { $env:TMPDIR } elseif ($env:TEMP) { $env:TEMP } else { '/tmp' }
 	return (Join-Path $base (Join-Path 'subfount' 'package'))
 }
 
 function script:Get-SubfPkgRefreshInterval {
-	if ($env:SUBF_PKG_REFRESH_INTERVAL) { return [long]$env:SUBF_PKG_REFRESH_INTERVAL }
+	if ($env:SUBFOUNT_PKG_REFRESH_INTERVAL) { return [long]$env:SUBFOUNT_PKG_REFRESH_INTERVAL }
 	return 600
 }
 
@@ -92,7 +92,7 @@ function script:Enter-SubfPkgLock([string]$Manager) {
 	New-Item -Path $stateDir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 	$lockDir = Join-Path $stateDir "$Manager.lock"
 	$pidFile = Join-Path $lockDir 'pid'
-	$timeoutMs = if ($env:SUBF_PKG_LOCK_TIMEOUT) { [int]$env:SUBF_PKG_LOCK_TIMEOUT * 1000 } else { 300000 }
+	$timeoutMs = if ($env:SUBFOUNT_PKG_LOCK_TIMEOUT) { [int]$env:SUBFOUNT_PKG_LOCK_TIMEOUT * 1000 } else { 300000 }
 	$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 	while ($true) {
 		try {

@@ -2,7 +2,7 @@
 # subfount 自更新的 Git 辅助函数
 
 invoke_repo_git() {
-	GIT_TERMINAL_PROMPT=0 GIT_OPTIONAL_LOCKS=0 git -C "$SUBF_DIR" "$@"
+	GIT_TERMINAL_PROMPT=0 GIT_OPTIONAL_LOCKS=0 git -C "$SUBFOUNT_DIR" "$@"
 }
 
 git_ref_exists() {
@@ -87,7 +87,7 @@ git_fetch_pull_request() {
 	git_fetch_with_fallback "+refs/pull/${pr}/head:refs/remotes/origin/pr/${pr}"
 }
 
-# 修复缺失/损坏的 $SUBF_DIR 仓库：初始化、配置 origin，然后用 CN/KP/RU 镜像回退
+# 修复缺失/损坏的 $SUBFOUNT_DIR 仓库：初始化、配置 origin，然后用 CN/KP/RU 镜像回退
 # 和低速超时拉取 master（与 runner 安装器一致）。
 # 拉取成功后 origin 保留指向实际拉取到的那个 URL。
 git_supplement_repo() {
@@ -96,7 +96,7 @@ git_supplement_repo() {
 		urls+=("https://gh-proxy.org/github.com/steve02081504/subfount.git" "https://gitclone.com/github.com/steve02081504/subfount.git")
 	fi
 	local had_git=0
-	if [ -n "${SUBF_DIR:-}" ] && [ -e "$SUBF_DIR/.git" ]; then had_git=1; fi
+	if [ -n "${SUBFOUNT_DIR:-}" ] && [ -e "$SUBFOUNT_DIR/.git" ]; then had_git=1; fi
 	invoke_repo_git init -b master || return 1
 	invoke_repo_git config core.autocrlf false || return 1
 	for url in "${urls[@]}"; do
@@ -112,8 +112,8 @@ git_supplement_repo() {
 	done
 	# 所有配置的拉取都失败了：撤销本次调用创建的 .git，以便下次运行时调用方
 	# 可重试完整的源码序列。绝不触碰已存在的仓库。
-	if [ "$had_git" -eq 0 ] && [ -n "${SUBF_DIR:-}" ]; then
-		rm -rf "$SUBF_DIR/.git"
+	if [ "$had_git" -eq 0 ] && [ -n "${SUBFOUNT_DIR:-}" ]; then
+		rm -rf "$SUBFOUNT_DIR/.git"
 	fi
 	return 1
 }
@@ -150,7 +150,7 @@ git_fetch_with_fallback() {
 
 git_backup_uncommitted() {
 	command -v git &>/dev/null || return 0
-	[ -e "$SUBF_DIR/.git" ] || return 0
+	[ -e "$SUBFOUNT_DIR/.git" ] || return 0
 	if [ -z "$(invoke_repo_git status --porcelain)" ]; then
 		return 0
 	fi
@@ -310,7 +310,7 @@ subfount_show_version() {
 		print_i18n_yellow 'version.noGit' >&2
 		return 1
 	fi
-	if [ ! -e "$SUBF_DIR/.git" ]; then
+	if [ ! -e "$SUBFOUNT_DIR/.git" ]; then
 		print_i18n_yellow 'version.noRepo' >&2
 		return 1
 	fi
@@ -324,7 +324,7 @@ subfount_show_version() {
 	subfount_print_version_branch "$branch"
 	get_i18n 'version.commit' 'ref' "$commit_hash"
 
-	if [ -f "$SUBF_DIR/.noupdate" ]; then
+	if [ -f "$SUBFOUNT_DIR/.noupdate" ]; then
 		get_i18n 'version.autoUpdatePaused'
 	fi
 

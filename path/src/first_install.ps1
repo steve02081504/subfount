@@ -1,11 +1,11 @@
 ﻿function script:subfount_first_install_if_needed {
-	if (!(Test-Path -Path "$SUBF_DIR/node_modules") -or $args[0] -eq 'init') {
-		Get-ChildItem -Path $SUBF_DIR -Recurse -File -Filter '*.ps1' -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue
-		if (Test-Path -Path "$SUBF_DIR/node_modules") {
+	if (!(Test-Path -Path "$SUBFOUNT_DIR/node_modules") -or $args[0] -eq 'init') {
+		Get-ChildItem -Path $SUBFOUNT_DIR -Recurse -File -Filter '*.ps1' -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue
+		if (Test-Path -Path "$SUBFOUNT_DIR/node_modules") {
 			run shutdown
 		}
-		if (!(Test-Path -Path "$SUBF_DIR/.noupdate")) {
-			if ((Get-Command git -ErrorAction Ignore) -and (Test-Path -Path "$SUBF_DIR/.git")) {
+		if (!(Test-Path -Path "$SUBFOUNT_DIR/.noupdate")) {
+			if ((Get-Command git -ErrorAction Ignore) -and (Test-Path -Path "$SUBFOUNT_DIR/.git")) {
 				invoke_repo_git config core.autocrlf false
 				invoke_repo_git pull --rebase --autostash 2>$null
 			}
@@ -16,7 +16,7 @@
 		if (deno_pinned_spec) {
 			deno_upgrade
 		}
-		deno install --allow-scripts --allow-all -c "$SUBF_DIR/deno.json" --entrypoint "$SUBF_DIR/src/index.mjs"
+		deno install --allow-scripts --allow-all -c "$SUBFOUNT_DIR/deno.json" --entrypoint "$SUBFOUNT_DIR/src/index.mjs"
 		$global:LastExitCode = 0
 		Write-TaskbarProgress -Percent 85
 		Write-Host "======================================================" -ForegroundColor Green

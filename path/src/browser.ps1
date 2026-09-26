@@ -61,8 +61,8 @@ function script:Test-Browser {
 	if (Get-Browser) {
 		RefreshPath
 		try {
-			New-Item -Path "$SUBF_DIR/data/installer" -ItemType Directory -Force | Out-Null
-			Set-Content "$SUBF_DIR/data/installer/auto_installed_chrome" '1'
+			New-Item -Path "$SUBFOUNT_DIR/data/installer" -ItemType Directory -Force | Out-Null
+			Set-Content "$SUBFOUNT_DIR/data/installer/auto_installed_chrome" '1'
 		} catch { <# ignore #> }
 	}
 }

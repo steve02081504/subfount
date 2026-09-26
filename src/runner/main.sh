@@ -10,7 +10,7 @@ C_YELLOW='\033[0;33m'
 C_CYAN='\033[0;36m'
 
 # 若未定义，则默认 subfount 安装分支
-SUBF_BRANCH="${SUBF_BRANCH:-"master"}"
+SUBFOUNT_BRANCH="${SUBFOUNT_BRANCH:-"master"}"
 
 # 任务栏进度
 taskbar_progress_enabled() { [ -t 1 ]; }
@@ -29,12 +29,12 @@ write_taskbar_progress_error() { taskbar_progress_enabled && printf "\033]9;4;2;
 write_taskbar_progress 0
 
 # 安装目标保护：不替换可能正被进程用作 cwd 的目录，所有 bash 平台统一走暂存安装。
-SUBF_EXISTING_INSTALL=0
-if [ -z "${SUBF_DIR:-}" ]; then
+SUBFOUNT_EXISTING_INSTALL=0
+if [ -z "${SUBFOUNT_DIR:-}" ]; then
 	if command -v subfount.sh &>/dev/null; then
-		SUBF_DIR="$(dirname "$(dirname "$(command -v subfount.sh)")")"
+		SUBFOUNT_DIR="$(dirname "$(dirname "$(command -v subfount.sh)")")"
 	else
-		SUBF_DIR="$HOME/.local/share/subfount"
+		SUBFOUNT_DIR="$HOME/.local/share/subfount"
 	fi
 fi
 
@@ -58,10 +58,10 @@ test_subfount_target_empty() {
 	return 0
 }
 
-if test_subfount_tree "$SUBF_DIR"; then
-	SUBF_EXISTING_INSTALL=1
-elif ! test_subfount_target_empty "$SUBF_DIR"; then
-	echo "Error: $SUBF_DIR is not an empty directory or a subfount installation. Choose another SUBF_DIR; existing files were left untouched." >&2
+if test_subfount_tree "$SUBFOUNT_DIR"; then
+	SUBFOUNT_EXISTING_INSTALL=1
+elif ! test_subfount_target_empty "$SUBFOUNT_DIR"; then
+	echo "Error: $SUBFOUNT_DIR is not an empty directory or a subfount installation. Choose another SUBFOUNT_DIR; existing files were left untouched." >&2
 	exit 1
 fi
 
@@ -86,7 +86,7 @@ fi
 # 若是 Windows 环境，则转交 PowerShell 处理
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
 	powershell.exe -noprofile -executionpolicy bypass -command "& {
-	\$scriptContent = Invoke-RestMethod https://raw.githubusercontent.com/steve02081504/subfount/refs/heads/$SUBF_BRANCH/src/runner/main.ps1
+	\$scriptContent = Invoke-RestMethod https://raw.githubusercontent.com/steve02081504/subfount/refs/heads/$SUBFOUNT_BRANCH/src/runner/main.ps1
 	Invoke-Expression \"function subfountInstaller { \$scriptContent }\"
 	subfountInstaller \$args
 	}" -- "$@"
@@ -102,7 +102,7 @@ fi
 # 确保在脚本退出时清理暂存目录，并清除任务栏进度
 # shellcheck disable=SC2329 # trap中有调用
 cleanup() {
-	[ -n "${SUBF_INSTALL_TMP:-}" ] && rm -rf "$SUBF_INSTALL_TMP"
+	[ -n "${SUBFOUNT_INSTALL_TMP:-}" ] && rm -rf "$SUBFOUNT_INSTALL_TMP"
 	write_taskbar_progress_clear
 }
 trap cleanup EXIT
@@ -111,11 +111,11 @@ trap cleanup EXIT
 FOUNT_AUTO_INSTALLED_PACKAGES="${FOUNT_AUTO_INSTALLED_PACKAGES:-}"
 
 # --- 包管理：main.sh 是 bash 脚本，用 bash 版 ---
-SUBF_PKG_STATE_DIR="${SUBF_PKG_STATE_DIR:-${TMPDIR:-${TEMP:-/tmp}}/subfount/package}"
+SUBFOUNT_PKG_STATE_DIR="${SUBFOUNT_PKG_STATE_DIR:-${TMPDIR:-${TEMP:-/tmp}}/subfount/package}"
 
 pkg_lock_acquire() {
-	local _manager="$1" _pkg_lock_dir="$SUBF_PKG_STATE_DIR/$1.lock" _pid="" _retry_count=0
-	mkdir -p "$SUBF_PKG_STATE_DIR" 2>/dev/null || return 1
+	local _manager="$1" _pkg_lock_dir="$SUBFOUNT_PKG_STATE_DIR/$1.lock" _pid="" _retry_count=0
+	mkdir -p "$SUBFOUNT_PKG_STATE_DIR" 2>/dev/null || return 1
 	while ! mkdir "$_pkg_lock_dir" 2>/dev/null; do
 		if [[ -f "$_pkg_lock_dir/pid" ]]; then
 			_pid=$(cat "$_pkg_lock_dir/pid" 2>/dev/null)
@@ -125,18 +125,18 @@ pkg_lock_acquire() {
 			fi
 		fi
 		_retry_count=$((_retry_count + 1))
-		[[ "$_retry_count" -ge $(( ${SUBF_PKG_LOCK_TIMEOUT:-300} * 10 )) ]] && return 1
+		[[ "$_retry_count" -ge $(( ${SUBFOUNT_PKG_LOCK_TIMEOUT:-300} * 10 )) ]] && return 1
 		sleep 0.1 2>/dev/null || sleep 1
 	done
 	printf '%s\n' "$$" >"$_pkg_lock_dir/pid"
-	SUBF_PKG_LOCK_DIR="$_pkg_lock_dir"
+	SUBFOUNT_PKG_LOCK_DIR="$_pkg_lock_dir"
 	return 0
 }
 
 pkg_lock_release() {
-	[[ -n "$SUBF_PKG_LOCK_DIR" ]] || return 0
-	rm -rf "$SUBF_PKG_LOCK_DIR"
-	SUBF_PKG_LOCK_DIR=""
+	[[ -n "$SUBFOUNT_PKG_LOCK_DIR" ]] || return 0
+	rm -rf "$SUBFOUNT_PKG_LOCK_DIR"
+	SUBFOUNT_PKG_LOCK_DIR=""
 }
 
 pkg_with_lock() {
@@ -150,18 +150,18 @@ pkg_with_lock() {
 }
 
 pkg_db_refresh_needed() {
-	local _manager="$1" _refresh_file="$SUBF_PKG_STATE_DIR/$1.refresh" _now="" _last=""
+	local _manager="$1" _refresh_file="$SUBFOUNT_PKG_STATE_DIR/$1.refresh" _now="" _last=""
 	[[ -f "$_refresh_file" ]] || return 0
 	_now=$(date +%s 2>/dev/null) || return 0
 	_last=$(cat "$_refresh_file" 2>/dev/null)
 	[[ -n "$_last" ]] || return 0
-	[[ "$((_now - _last))" -ge "${SUBF_PKG_REFRESH_INTERVAL:-600}" ]]
+	[[ "$((_now - _last))" -ge "${SUBFOUNT_PKG_REFRESH_INTERVAL:-600}" ]]
 }
 
 pkg_db_refresh_mark() {
 	local _manager="$1"
-	mkdir -p "$SUBF_PKG_STATE_DIR" 2>/dev/null || return 1
-	printf '%s\n' "$(date +%s 2>/dev/null)" >"$SUBF_PKG_STATE_DIR/$_manager.refresh" 2>/dev/null
+	mkdir -p "$SUBFOUNT_PKG_STATE_DIR" 2>/dev/null || return 1
+	printf '%s\n' "$(date +%s 2>/dev/null)" >"$SUBFOUNT_PKG_STATE_DIR/$_manager.refresh" 2>/dev/null
 }
 
 pkg_refresh() {
@@ -256,14 +256,14 @@ install_package() {
 }
 
 # 默认安装目录
-SUBF_DIR="${SUBF_DIR:-"$HOME/.local/share/subfount"}"
+SUBFOUNT_DIR="${SUBFOUNT_DIR:-"$HOME/.local/share/subfount"}"
 
 import_subfount_locale() {
-	SUBF_CONSOLE_ANSI=0
-	[ -t 1 ] && SUBF_CONSOLE_ANSI=1
-	export SUBF_CONSOLE_ANSI SUBF_DIR
+	SUBFOUNT_CONSOLE_ANSI=0
+	[ -t 1 ] && SUBFOUNT_CONSOLE_ANSI=1
+	export SUBFOUNT_CONSOLE_ANSI SUBFOUNT_DIR
 	# shellcheck disable=SC1091
-	. "$SUBF_DIR/path/src/i18n.sh"
+	. "$SUBFOUNT_DIR/path/src/i18n.sh"
 }
 
 new_args=("$@")
@@ -272,12 +272,12 @@ if [[ "${#new_args[@]}" -eq 0 ]]; then
 fi
 
 install_subfount_tree() {
-	local clone_ok="" clones=() install_dir="$SUBF_DIR"
+	local clone_ok="" clones=() install_dir="$SUBFOUNT_DIR"
 	local locale_var="${LC_ALL:-${LC_MESSAGES:-$LANG}}"
-	echo -e "Installing subfount into ${C_CYAN}$SUBF_DIR${C_RESET}..."
-	SUBF_INSTALL_TMP=$(mktemp -d) || return 1
-	install_dir="$SUBF_INSTALL_TMP/tree"
-	mkdir -p "$(dirname "$SUBF_DIR")"
+	echo -e "Installing subfount into ${C_CYAN}$SUBFOUNT_DIR${C_RESET}..."
+	SUBFOUNT_INSTALL_TMP=$(mktemp -d) || return 1
+	install_dir="$SUBFOUNT_INSTALL_TMP/tree"
+	mkdir -p "$(dirname "$SUBFOUNT_DIR")"
 	write_taskbar_progress 20
 
 	if command -v git &>/dev/null; then
@@ -288,7 +288,7 @@ install_subfount_tree() {
 			clones+=("https://gh-proxy.org/github.com/steve02081504/subfount.git" "https://gitclone.com/github.com/steve02081504/subfount.git")
 		fi
 		for clone_url in "${clones[@]}"; do
-			if git clone -c core.autocrlf=false -c http.lowSpeedLimit=1 -c http.lowSpeedTime=30 "$clone_url" "$install_dir" --depth 1 --single-branch --branch "$SUBF_BRANCH"; then
+			if git clone -c core.autocrlf=false -c http.lowSpeedLimit=1 -c http.lowSpeedTime=30 "$clone_url" "$install_dir" --depth 1 --single-branch --branch "$SUBFOUNT_BRANCH"; then
 				clone_ok=1
 				break
 			fi
@@ -310,11 +310,11 @@ install_subfount_tree() {
 		install_package "unzip" "unzip" || return 1
 		write_taskbar_progress 35
 
-		zip_urls=("https://github.com/steve02081504/subfount/archive/refs/heads/$SUBF_BRANCH.zip")
+		zip_urls=("https://github.com/steve02081504/subfount/archive/refs/heads/$SUBFOUNT_BRANCH.zip")
 		if [[ "$locale_var" =~ _(CN|KP|RU)(\.|@|$) ]]; then
-			zip_urls+=("https://gh-proxy.org/https://github.com/steve02081504/subfount/archive/refs/heads/$SUBF_BRANCH.zip")
+			zip_urls+=("https://gh-proxy.org/https://github.com/steve02081504/subfount/archive/refs/heads/$SUBFOUNT_BRANCH.zip")
 		fi
-		ZIP_FILE="$SUBF_INSTALL_TMP/subfount.zip"
+		ZIP_FILE="$SUBFOUNT_INSTALL_TMP/subfount.zip"
 
 		zip_ok=""
 		for zip_url in "${zip_urls[@]}"; do
@@ -335,47 +335,47 @@ install_subfount_tree() {
 
 		if [ -z "$zip_ok" ]; then
 			echo -e "${C_RED}Error: Download failed.${C_RESET}" >&2
-			rm -rf "$SUBF_INSTALL_TMP"
-			SUBF_INSTALL_TMP=""
+			rm -rf "$SUBFOUNT_INSTALL_TMP"
+			SUBFOUNT_INSTALL_TMP=""
 			return 1
 		fi
 
 		echo "Unzipping subfount..."
-		if ! unzip -q -o "$ZIP_FILE" -d "$SUBF_INSTALL_TMP"; then
+		if ! unzip -q -o "$ZIP_FILE" -d "$SUBFOUNT_INSTALL_TMP"; then
 			echo -e "${C_RED}Error: Unzip failed.${C_RESET}" >&2
-			rm -rf "$SUBF_INSTALL_TMP"
-			SUBF_INSTALL_TMP=""
+			rm -rf "$SUBFOUNT_INSTALL_TMP"
+			SUBFOUNT_INSTALL_TMP=""
 			return 1
 		fi
 		write_taskbar_progress 50
 
-		extracted_dir=$(find "$SUBF_INSTALL_TMP" -maxdepth 1 -type d -name "subfount-*" | head -n 1)
+		extracted_dir=$(find "$SUBFOUNT_INSTALL_TMP" -maxdepth 1 -type d -name "subfount-*" | head -n 1)
 
 		if [ -z "$extracted_dir" ] || [ ! -d "$extracted_dir" ]; then
-			echo -e "${C_RED}Error: Could not find extracted subfount directory in $SUBF_INSTALL_TMP${C_RESET}" >&2
-			rm -rf "$SUBF_INSTALL_TMP"
-			SUBF_INSTALL_TMP=""
+			echo -e "${C_RED}Error: Could not find extracted subfount directory in $SUBFOUNT_INSTALL_TMP${C_RESET}" >&2
+			rm -rf "$SUBFOUNT_INSTALL_TMP"
+			SUBFOUNT_INSTALL_TMP=""
 			return 1
 		fi
 
 		install_dir="$extracted_dir"
 	fi
 
-	if test_subfount_tree "$install_dir" && test_subfount_target_empty "$SUBF_DIR"; then
-		mkdir -p "$SUBF_DIR" && cp -R "$install_dir/." "$SUBF_DIR/" || {
-			rm -rf "$SUBF_INSTALL_TMP"
-			SUBF_INSTALL_TMP=""
+	if test_subfount_tree "$install_dir" && test_subfount_target_empty "$SUBFOUNT_DIR"; then
+		mkdir -p "$SUBFOUNT_DIR" && cp -R "$install_dir/." "$SUBFOUNT_DIR/" || {
+			rm -rf "$SUBFOUNT_INSTALL_TMP"
+			SUBFOUNT_INSTALL_TMP=""
 			return 1
 		}
 	else
-		rm -rf "$SUBF_INSTALL_TMP"
-		SUBF_INSTALL_TMP=""
+		rm -rf "$SUBFOUNT_INSTALL_TMP"
+		SUBFOUNT_INSTALL_TMP=""
 		return 1
 	fi
-	rm -rf "$SUBF_INSTALL_TMP"
-	SUBF_INSTALL_TMP=""
+	rm -rf "$SUBFOUNT_INSTALL_TMP"
+	SUBFOUNT_INSTALL_TMP=""
 
-	if [ ! -f "$SUBF_DIR/path/subfount.sh" ]; then
+	if [ ! -f "$SUBFOUNT_DIR/path/subfount.sh" ]; then
 		write_taskbar_progress_error
 		echo -e "${C_RED}Error: subfount installation failed. Main script not found.${C_RESET}" >&2
 		return 1
@@ -384,10 +384,10 @@ install_subfount_tree() {
 	write_taskbar_progress 60
 	echo "Setting permissions..."
 	if [[ "$OSTYPE" == "darwin"* ]]; then
-		xattr -dr com.apple.quarantine "$SUBF_DIR" 2>/dev/null || true
+		xattr -dr com.apple.quarantine "$SUBFOUNT_DIR" 2>/dev/null || true
 	fi
-	find "$SUBF_DIR" -type f \( -name "*.sh" -o -name "*.ps1" -o -name "*.bat" \) -exec chmod +x {} +
-	find "$SUBF_DIR/path" -maxdepth 1 -type f -exec chmod +x {} +
+	find "$SUBFOUNT_DIR" -type f \( -name "*.sh" -o -name "*.ps1" -o -name "*.bat" \) -exec chmod +x {} +
+	find "$SUBFOUNT_DIR/path" -maxdepth 1 -type f -exec chmod +x {} +
 	write_taskbar_progress 70
 	echo -e "${C_GREEN}subfount installation complete.${C_RESET}"
 	return 0
@@ -408,7 +408,7 @@ if [[ -n "$SCRIPT_SELF_PATH" && -w "$SCRIPT_SELF_PATH" ]]; then
 	esac
 fi
 
-if [ "$SUBF_EXISTING_INSTALL" -eq 1 ]; then
+if [ "$SUBFOUNT_EXISTING_INSTALL" -eq 1 ]; then
 	import_subfount_locale
 else
 	# 检测环境
@@ -425,7 +425,7 @@ else
 
 	install_subfount_tree
 	install_status=$?
-	if [[ "$install_status" -ne 0 ]] || [ ! -f "$SUBF_DIR/path/subfount.sh" ]; then
+	if [[ "$install_status" -ne 0 ]] || [ ! -f "$SUBFOUNT_DIR/path/subfount.sh" ]; then
 		write_taskbar_progress_error
 		echo -e "${C_RED}Error: subfount installation failed. Main script not found.${C_RESET}" >&2
 		exit 1
@@ -434,15 +434,15 @@ else
 	import_subfount_locale
 fi
 
-# 若脚本自身内容和$SUBF_DIR/src/runner/main.sh的内容不同，则更新自身
-if [[ "$can_self_modify" -eq 1 && -f "$SUBF_DIR/src/runner/main.sh" ]] && ! cmp -s "$SUBF_DIR/src/runner/main.sh" "$SCRIPT_SELF_PATH"; then
+# 若脚本自身内容和$SUBFOUNT_DIR/src/runner/main.sh的内容不同，则更新自身
+if [[ "$can_self_modify" -eq 1 && -f "$SUBFOUNT_DIR/src/runner/main.sh" ]] && ! cmp -s "$SUBFOUNT_DIR/src/runner/main.sh" "$SCRIPT_SELF_PATH"; then
 	get_i18n 'install.runnerUpdating'
-	cp "$SUBF_DIR/src/runner/main.sh" "$SCRIPT_SELF_PATH"
+	cp "$SUBFOUNT_DIR/src/runner/main.sh" "$SCRIPT_SELF_PATH"
 	chmod +x "$SCRIPT_SELF_PATH"
 fi
 
 # 执行真正的 subfount 核心脚本
-"$SUBF_DIR/run.sh" "${new_args[@]}"
+"$SUBFOUNT_DIR/run.sh" "${new_args[@]}"
 subfountExitCode=$?
 
 if [[ "$can_self_modify" -eq 1 && "${new_args[0]}" == "remove" ]]; then

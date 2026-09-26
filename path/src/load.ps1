@@ -6,7 +6,7 @@ function script:require {
 		if (-not $Module) { continue }
 		if ($script:SubfLoaded[$Module]) { continue }
 		$relativePath = $Module -replace '/', [IO.Path]::DirectorySeparatorChar
-		$path = Join-Path $script:SUBF_SRC "$relativePath.ps1"
+		$path = Join-Path $script:SUBFOUNT_SRC "$relativePath.ps1"
 		if (-not (Test-Path -LiteralPath $path)) {
 			Write-Error "require: missing $path"
 			exit 1
@@ -31,19 +31,19 @@ function script:bootstrap_full {
 
 function script:bootstrap_server {
 	bootstrap_full @args
-	assert_dir_writable $SUBF_DIR
+	assert_dir_writable $SUBFOUNT_DIR
 	update_subfount_and_deno_background
 	deno -V
 }
 
 function script:source_uninstall_hooks {
-	Get-ChildItem -Path $script:SUBF_SRC -Recurse -Filter '*.uninstall.*.ps1' -File |
+	Get-ChildItem -Path $script:SUBFOUNT_SRC -Recurse -Filter '*.uninstall.*.ps1' -File |
 		ForEach-Object {
 			if ($_.Name -match '\.uninstall\.(\d+)\.ps1$') {
 				[PSCustomObject]@{
 					Path         = $_.FullName
 					Level        = [int]$Matches[1]
-					RelativePath = $_.FullName.Substring($script:SUBF_SRC.Length).TrimStart('\', '/')
+					RelativePath = $_.FullName.Substring($script:SUBFOUNT_SRC.Length).TrimStart('\', '/')
 				}
 			}
 		} |

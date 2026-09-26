@@ -15,19 +15,19 @@ function script:Register-SubfApplicationRestart {
 	if ($script:SubfRestartRegistered) { return }
 	$script:SubfRestartRegistered = $true
 	$restartArgs = ''
-	if ($env:SUBF_BACKGROUND) {
+	if ($env:SUBFOUNT_BACKGROUND) {
 		$restartArgs += ' background'
 	}
-	if ($env:SUBF_KEEPALIVE) {
+	if ($env:SUBFOUNT_KEEPALIVE) {
 		$restartArgs += ' keepalive'
 	}
-	$restartCommandLine = " -NoProfile -ExecutionPolicy Bypass -Command `".{ .\`"$SUBF_DIR/path/subfount.ps1\`"$restartArgs }`""
+	$restartCommandLine = " -NoProfile -ExecutionPolicy Bypass -Command `".{ .\`"$SUBFOUNT_DIR/path/subfount.ps1\`"$restartArgs }`""
 	[SubfRestart]::RegisterApplicationRestart($restartCommandLine, 3) | Out-Null
 }
 
 # 程序正常或 Ctrl+C 退出时取消“系统重启后恢复”注册，避免被系统再次拉起
 function script:Unregister-SubfApplicationRestart {
 	if (!$IsWindows) { return }
-	Remove-Item Env:\SUBF_RESTART_REGISTERED -Force -ErrorAction Ignore
+	Remove-Item Env:\SUBFOUNT_RESTART_REGISTERED -Force -ErrorAction Ignore
 	[SubfRestart]::UnregisterApplicationRestart() | Out-Null
 }

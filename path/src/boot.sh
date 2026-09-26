@@ -5,10 +5,10 @@ register_boot_background() {
 	if in_container; then
 		return 0
 	fi
-	if [ -f "$SUBF_DIR/.noautoboot" ]; then
+	if [ -f "$SUBFOUNT_DIR/.noautoboot" ]; then
 		return 0
 	fi
-	local launcher="$SUBF_DIR/path/subfount"
+	local launcher="$SUBFOUNT_DIR/path/subfount"
 	case "$OS_TYPE" in
 	Linux)
 		mkdir -p "$HOME/.config/autostart"

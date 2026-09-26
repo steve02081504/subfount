@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 cmd_keepalive() {
 	bootstrap_server "$@"
-	export SUBF_KEEPALIVE=1
-	trap 'write_taskbar_progress_clear; unset SUBF_KEEPALIVE' EXIT INT TERM
+	export SUBFOUNT_KEEPALIVE=1
+	trap 'write_taskbar_progress_clear; unset SUBFOUNT_KEEPALIVE' EXIT INT TERM
 	shift
 
 	local start_time init_attempted restart_timestamps server_status

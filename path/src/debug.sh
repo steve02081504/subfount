@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Chrome DevTools helper for SUBF_DEBUG
+# Chrome DevTools helper for SUBFOUNT_DEBUG
 
 debug_on() {
-	SUBF_DEBUG=1
-	export SUBF_DEBUG
+	SUBFOUNT_DEBUG=1
+	export SUBFOUNT_DEBUG
 	if [[ $OS_TYPE == "Darwin" ]]; then
 		if [ -d "/Applications/Google Chrome.app" ]; then
 			open -a "Google Chrome" --new --args --new-window

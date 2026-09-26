@@ -1,6 +1,6 @@
-﻿# 确保 $SUBF_DIR\path 在用户 PATH 中
+﻿# 确保 $SUBFOUNT_DIR\path 在用户 PATH 中
 # subfount 没有自带的 pwsh 模块，故不向 $Profile 注入任何 Import-Module。
-$subfPathDir = Join-Path $SUBF_DIR 'path'
+$subfPathDir = Join-Path $SUBFOUNT_DIR 'path'
 $UserPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
 $userPathList = @($UserPath -split ';' | Where-Object { $_ })
 if ($userPathList -notcontains $subfPathDir) {

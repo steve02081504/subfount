@@ -1,7 +1,7 @@
 ﻿function script:cmd_shutdown {
 	require i18n terminal
-	$pidFile = Join-Path $SUBF_DIR 'data/daemon.pid'
-	$stopFile = Join-Path $SUBF_DIR 'data/stop.request'
+	$pidFile = Join-Path $SUBFOUNT_DIR 'data/daemon.pid'
+	$stopFile = Join-Path $SUBFOUNT_DIR 'data/stop.request'
 	if (Test-Path $pidFile) {
 		$pidValue = (Get-Content $pidFile -Raw -ErrorAction SilentlyContinue).Trim()
 		if ($pidValue -and (Get-Process -Id $pidValue -ErrorAction SilentlyContinue)) {

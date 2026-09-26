@@ -42,10 +42,10 @@ subfount_resolve_upstream() {
 
 subfount_upgrade() {
 	install_package "git" "git" || return 0
-	if git config --global --get-all safe.directory | grep -q -xF "$SUBF_DIR"; then : else
-		git config --global --add safe.directory "$SUBF_DIR"
+	if git config --global --get-all safe.directory | grep -q -xF "$SUBFOUNT_DIR"; then : else
+		git config --global --add safe.directory "$SUBFOUNT_DIR"
 	fi
-	if [ ! -e "$SUBF_DIR/.git" ]; then
+	if [ ! -e "$SUBFOUNT_DIR/.git" ]; then
 		get_i18n 'git.repoNotFound'
 		get_i18n 'git.fetchingAndResetting'
 		if ! git_supplement_repo; then
@@ -122,7 +122,7 @@ subfount_upgrade() {
 
 # 前台执行 subfount + deno 升级。
 update_subfount_and_deno() {
-	if [ -f "$SUBF_DIR/.noupdate" ]; then
+	if [ -f "$SUBFOUNT_DIR/.noupdate" ]; then
 		get_i18n 'update.skippingSubfountUpdate'
 		return
 	fi
@@ -136,8 +136,8 @@ subfount_switch_to_branch() {
 	get_i18n 'update.switchingToBranch' 'branch' "$target"
 	git_fetch_remote_branch "$target" || return 1
 	git_checkout_branch "$target" "origin/$target" || return 1
-	if [ -f "$SUBF_DIR/.noupdate" ]; then
-		rm -f "$SUBF_DIR/.noupdate"
+	if [ -f "$SUBFOUNT_DIR/.noupdate" ]; then
+		rm -f "$SUBFOUNT_DIR/.noupdate"
 		get_i18n 'update.removedNoUpdate'
 	fi
 }
@@ -146,10 +146,10 @@ subfount_switch_to_branch() {
 subfount_update_to_ref() {
 	local target="$1" commit remote_status pr_number
 	install_package "git" "git" || return 0
-	if git config --global --get-all safe.directory | grep -q -xF "$SUBF_DIR"; then : else
-		git config --global --add safe.directory "$SUBF_DIR"
+	if git config --global --get-all safe.directory | grep -q -xF "$SUBFOUNT_DIR"; then : else
+		git config --global --add safe.directory "$SUBFOUNT_DIR"
 	fi
-	if [ ! -e "$SUBF_DIR/.git" ]; then
+	if [ ! -e "$SUBFOUNT_DIR/.git" ]; then
 		get_i18n 'git.repoNotFound'
 		if ! git_supplement_repo; then
 			print_i18n_yellow 'git.fetchFailed' >&2
@@ -169,7 +169,7 @@ subfount_update_to_ref() {
 			return 1
 		fi
 		git_detach_to_ref "origin/pr/$pr_number" || return 1
-		: >"$SUBF_DIR/.noupdate"
+		: >"$SUBFOUNT_DIR/.noupdate"
 		get_i18n 'update.createdNoUpdate'
 		deno_upgrade
 		return
@@ -191,8 +191,8 @@ subfount_update_to_ref() {
 		get_i18n 'update.switchingToBranch' 'branch' "$target"
 		git_backup_uncommitted || return 1
 		invoke_repo_git checkout "$target" || return 1
-		if [ -f "$SUBF_DIR/.noupdate" ]; then
-			rm -f "$SUBF_DIR/.noupdate"
+		if [ -f "$SUBFOUNT_DIR/.noupdate" ]; then
+			rm -f "$SUBFOUNT_DIR/.noupdate"
 			get_i18n 'update.removedNoUpdate'
 		fi
 		subfount_upgrade || return
@@ -223,7 +223,7 @@ subfount_update_to_ref() {
 
 	get_i18n 'update.pinningToCommit' 'ref' "$commit"
 	git_detach_to_ref "$commit" || return 1
-	: >"$SUBF_DIR/.noupdate"
+	: >"$SUBFOUNT_DIR/.noupdate"
 	get_i18n 'update.createdNoUpdate'
 	deno_upgrade
 }
@@ -255,11 +255,11 @@ subfount_update_to_url() {
 
 # 首次成功升级 deno 后，例程改为在后台刷新。
 update_subfount_and_deno_background() {
-	if [ -f "$SUBF_DIR/.noupdate" ]; then
+	if [ -f "$SUBFOUNT_DIR/.noupdate" ]; then
 		get_i18n 'update.skippingSubfountUpdate'
 		return
 	fi
-	local upgraded_flag="$SUBF_DIR/data/installer/deno_upgraded"
+	local upgraded_flag="$SUBFOUNT_DIR/data/installer/deno_upgraded"
 	if [ -f "$upgraded_flag" ]; then
 		( update_subfount_and_deno ) &
 		return

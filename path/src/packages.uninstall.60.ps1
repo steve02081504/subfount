@@ -1,20 +1,20 @@
-﻿if (Test-Path "$SUBF_DIR/data/installer/auto_installed_git") {
+﻿if (Test-Path "$SUBFOUNT_DIR/data/installer/auto_installed_git") {
 	Write-Host (Get-I18n -key 'remove.uninstalling.git')
 	winget uninstall --id Git.Git -e --source winget
 }
 
-if (Test-Path "$SUBF_DIR/data/installer/auto_installed_chrome") {
+if (Test-Path "$SUBFOUNT_DIR/data/installer/auto_installed_chrome") {
 	Write-Host (Get-I18n -key 'remove.uninstalling.chrome')
 	winget uninstall --id Google.Chrome -e --source winget
 }
 
-if (Test-Path "$SUBF_DIR/data/installer/auto_installed_winget") {
+if (Test-Path "$SUBFOUNT_DIR/data/installer/auto_installed_winget") {
 	Write-Host (Get-I18n -key 'remove.uninstalling.winget')
 	Import-Module Appx
 	Remove-AppxPackage -Package Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 }
 
-if (Test-Path "$SUBF_DIR/data/installer/auto_installed_deno") {
+if (Test-Path "$SUBFOUNT_DIR/data/installer/auto_installed_deno") {
 	Write-Host (Get-I18n -key 'remove.uninstalling.deno')
 	$deno = Get-Command deno -ErrorAction SilentlyContinue
 	if ($deno) {

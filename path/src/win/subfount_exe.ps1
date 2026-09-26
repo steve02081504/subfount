@@ -40,7 +40,7 @@ function script:New-SubfountExe($executablePath = "subfount.exe") {
 	# Contract: ps12exe fails via $LastExitCode only (steve02081504/ps12exe#58).
 	# This try/catch stays glued to the ps12exe call — report every throw, do not rethrow.
 	try {
-		ps12exe -inputFile "$SUBF_DIR/src/runner/main.ps1" -outputFile $executablePath
+		ps12exe -inputFile "$SUBFOUNT_DIR/src/runner/main.ps1" -outputFile $executablePath
 	}
 	catch {
 		Send-Ps12exeThrowIssue $_

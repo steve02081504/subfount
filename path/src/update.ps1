@@ -1,5 +1,5 @@
 ﻿function script:update_subfount_and_deno {
-	if (Test-Path -Path "$SUBF_DIR/.noupdate") {
+	if (Test-Path -Path "$SUBFOUNT_DIR/.noupdate") {
 		Write-Host (Get-I18n -key 'update.skippingSubfountUpdate')
 		return
 	}
@@ -15,8 +15,8 @@ function script:subfount_switch_to_branch($Target) {
 	if ($LastExitCode -ne 0) { return }
 	git_checkout_branch $Target "origin/$Target"
 	if ($LastExitCode -ne 0) { return }
-	if (Test-Path -LiteralPath "$SUBF_DIR/.noupdate") {
-		Remove-Item -LiteralPath "$SUBF_DIR/.noupdate" -Force
+	if (Test-Path -LiteralPath "$SUBFOUNT_DIR/.noupdate") {
+		Remove-Item -LiteralPath "$SUBFOUNT_DIR/.noupdate" -Force
 		Write-Host (Get-I18n -key 'update.removedNoUpdate')
 	}
 }
@@ -27,10 +27,10 @@ function script:subfount_update_to_ref($Target) {
 		Write-Host (Get-I18n -key 'git.notInstalledSkippingPull')
 		return
 	}
-	if ($SUBF_DIR -notin $(git config --global --get-all safe.directory)) {
-		git config --global --add safe.directory "$SUBF_DIR"
+	if ($SUBFOUNT_DIR -notin $(git config --global --get-all safe.directory)) {
+		git config --global --add safe.directory "$SUBFOUNT_DIR"
 	}
-	if (!(Test-Path -Path "$SUBF_DIR/.git")) {
+	if (!(Test-Path -Path "$SUBFOUNT_DIR/.git")) {
 		Write-Host (Get-I18n -key 'git.repoNotFound')
 		git_supplement_repo
 		if ($LastExitCode -ne 0) {
@@ -54,7 +54,7 @@ function script:subfount_update_to_ref($Target) {
 		}
 		git_detach_to_ref "origin/pr/$prNumber"
 		if ($LastExitCode -ne 0) { return }
-		New-Item -Path "$SUBF_DIR/.noupdate" -ItemType File -Force | Out-Null
+		New-Item -Path "$SUBFOUNT_DIR/.noupdate" -ItemType File -Force | Out-Null
 		Write-Host (Get-I18n -key 'update.createdNoUpdate')
 		deno_upgrade
 		return
@@ -79,8 +79,8 @@ function script:subfount_update_to_ref($Target) {
 		if ($LastExitCode -ne 0) { return }
 		invoke_repo_git checkout $Target
 		if ($LastExitCode -ne 0) { return }
-		if (Test-Path -LiteralPath "$SUBF_DIR/.noupdate") {
-			Remove-Item -LiteralPath "$SUBF_DIR/.noupdate" -Force
+		if (Test-Path -LiteralPath "$SUBFOUNT_DIR/.noupdate") {
+			Remove-Item -LiteralPath "$SUBFOUNT_DIR/.noupdate" -Force
 			Write-Host (Get-I18n -key 'update.removedNoUpdate')
 		}
 		subfount_upgrade
@@ -114,7 +114,7 @@ function script:subfount_update_to_ref($Target) {
 	Write-Host (Get-I18n -key 'update.pinningToCommit' -params @{ ref = $commit })
 	git_detach_to_ref $commit
 	if ($LastExitCode -ne 0) { return }
-	New-Item -Path "$SUBF_DIR/.noupdate" -ItemType File -Force | Out-Null
+	New-Item -Path "$SUBFOUNT_DIR/.noupdate" -ItemType File -Force | Out-Null
 	Write-Host (Get-I18n -key 'update.createdNoUpdate')
 	deno_upgrade
 }
@@ -148,17 +148,17 @@ function script:subfount_update_to_url($Url) {
 
 # 首次成功升级 deno 后，例程改为在后台刷新。
 function script:update_subfount_and_deno_background {
-	if (Test-Path -Path "$SUBF_DIR/.noupdate") {
+	if (Test-Path -Path "$SUBFOUNT_DIR/.noupdate") {
 		Write-Host (Get-I18n -key 'update.skippingSubfountUpdate')
 		return
 	}
-	$upgradedFlag = Join-Path $SUBF_DIR 'data/installer/deno_upgraded'
+	$upgradedFlag = Join-Path $SUBFOUNT_DIR 'data/installer/deno_upgraded'
 	if (Test-Path $upgradedFlag) {
 		# Start-Job 无法调用进程内函数；通过 `subfount update` 重新进入。
 		Start-Job -ScriptBlock {
 			param($subfPs1)
 			& $subfPs1 update
-		} -ArgumentList (Join-Path $SUBF_DIR 'path/subfount.ps1') | Out-Null
+		} -ArgumentList (Join-Path $SUBFOUNT_DIR 'path/subfount.ps1') | Out-Null
 		return
 	}
 	update_subfount_and_deno

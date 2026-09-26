@@ -2,12 +2,12 @@
 # First-time dependency install (node_modules via deno install)
 
 subfount_first_install_if_needed() {
-	if [[ ! -d "$SUBF_DIR/node_modules" || "${1:-}" = 'init' ]]; then
-		if [ ! -f "$SUBF_DIR/.noupdate" ]; then
+	if [[ ! -d "$SUBFOUNT_DIR/node_modules" || "${1:-}" = 'init' ]]; then
+		if [ ! -f "$SUBFOUNT_DIR/.noupdate" ]; then
 			install_package "git" "git git-core" || true
 		fi
-		if [[ -d "$SUBF_DIR/node_modules" ]]; then run shutdown || true; fi
-		if [ ! -f "$SUBF_DIR/.noupdate" ] && [ -d "$SUBF_DIR/.git" ]; then
+		if [[ -d "$SUBFOUNT_DIR/node_modules" ]]; then run shutdown || true; fi
+		if [ ! -f "$SUBFOUNT_DIR/.noupdate" ] && [ -d "$SUBFOUNT_DIR/.git" ]; then
 			invoke_repo_git pull --rebase --autostash || true
 		fi
 		write_taskbar_progress 70
@@ -15,7 +15,7 @@ subfount_first_install_if_needed() {
 		if [ -n "$(deno_pinned_spec)" ]; then
 			deno_upgrade
 		fi
-		run_deno install --allow-scripts --allow-all -c "$SUBF_DIR/deno.json" --entrypoint "$SUBF_DIR/src/index.mjs" || true
+		run_deno install --allow-scripts --allow-all -c "$SUBFOUNT_DIR/deno.json" --entrypoint "$SUBFOUNT_DIR/src/index.mjs" || true
 		write_taskbar_progress 85
 		if ! in_container; then
 			register_boot_background || true

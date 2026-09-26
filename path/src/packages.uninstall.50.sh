@@ -6,7 +6,7 @@ fi
 load_installed_packages
 for package in "${INSTALLED_SYSTEM_PACKAGES_ARRAY[@]}"; do uninstall_package "$package"; done
 
-if [ -f "$SUBF_AUTO_INSTALLED_DENO_FLAG" ]; then
+if [ -f "$SUBFOUNT_AUTO_INSTALLED_DENO_FLAG" ]; then
 	get_i18n 'remove.uninstalling.deno'
 	rm -rf "$HOME/.deno"
 	for profile_file in $(get_profile_files); do
@@ -14,7 +14,7 @@ if [ -f "$SUBF_AUTO_INSTALLED_DENO_FLAG" ]; then
 	done
 	PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "$HOME/.deno/bin" | tr '\n' ':' | sed 's/:*$//')
 	export PATH
-	rm -f "$SUBF_AUTO_INSTALLED_DENO_FLAG"
+	rm -f "$SUBFOUNT_AUTO_INSTALLED_DENO_FLAG"
 fi
 set_title "𝓈𝓊"
 write_taskbar_progress 60

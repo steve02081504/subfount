@@ -4,7 +4,7 @@ $script:SubfTestLidSubButtonsGuid = '4f971e89-eebd-4455-a8de-9e59040e7347'
 $script:SubfTestLidActionGuid = '5ca83367-6e45-459f-a27b-476b1d01c936'
 $script:SubfTestKeepAwakeActive = $false
 $script:SubfTestLidHolder = $false
-function script:Get-SubfTestKeepAwakeStatePath { "$SUBF_DIR/data/test/state/keep_awake.json" }
+function script:Get-SubfTestKeepAwakeStatePath { "$SUBFOUNT_DIR/data/test/state/keep_awake.json" }
 function script:Get-SubfTestLidAc {
 	# 读活动方案注册表，避免 powercfg 标签随系统语言变化
 	$active = (Get-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes' -Name ActivePowerScheme -ErrorAction SilentlyContinue).ActivePowerScheme
@@ -82,7 +82,7 @@ function script:Update-SubfTestKeepAwakeState([scriptblock]$Mutator) {
 }
 function script:Enable-SubfTestKeepAwake {
 	if (-not $IsWindows) { return }
-	if (-not $env:SUBF_TEST_ALLOW_SLEEP) {
+	if (-not $env:SUBFOUNT_TEST_ALLOW_SLEEP) {
 		if (-not ('SubfKeepAwake' -as [type])) {
 			Add-Type -TypeDefinition @'
 using System.Runtime.InteropServices;
@@ -123,7 +123,7 @@ function script:Disable-SubfTestKeepAwake {
 		$script:SubfTestKeepAwakeActive = $false
 	}
 	if (-not $IsWindows) { return }
-	# 含 SUBF_TEST_ALLOW_SLEEP：无 holder 时仍清孤儿存档
+	# 含 SUBFOUNT_TEST_ALLOW_SLEEP：无 holder 时仍清孤儿存档
 	# 损坏态 Read 故意抛：此处吞掉，避免 test finally 冲掉 deno exit code
 	try {
 		Update-SubfTestKeepAwakeState {
