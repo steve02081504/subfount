@@ -16,3 +16,10 @@ subfount.exe
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Versioned folder customizations
+!/desktop.ini
+!/path/desktop.ini
+!/path/src/desktop.ini
+!/src/desktop.ini
+!/test/desktop.ini

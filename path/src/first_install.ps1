@@ -24,6 +24,8 @@
 		Write-Host "======================================================" -ForegroundColor Green
 		Write-TaskbarProgressClear
 
+		require win/file_attrs
+		Initialize-SubfountDesktopIni
 		Register-SubfBootBackground
 	}
 }
