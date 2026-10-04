@@ -30,6 +30,7 @@ bootstrap_full() {
 
 bootstrap_server() {
 	bootstrap_full "$@"
+	enable_clash_tun_background
 	assert_dir_writable "$SUBFOUNT_DIR"
 	update_subfount_and_deno_background
 	run_deno -V

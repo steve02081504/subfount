@@ -25,12 +25,15 @@ function script:require_mid {
 }
 
 function script:bootstrap_full {
-	require_mid
+	require env win/refresh_path deno fs run first_install
+	install_deno
 	subfount_first_install_if_needed @args
 }
 
 function script:bootstrap_server {
-	bootstrap_full @args
+	require_mid
+	subfount_first_install_if_needed @args
+	Enable-SubfClashTunBackground
 	assert_dir_writable $SUBFOUNT_DIR
 	update_subfount_and_deno_background
 	deno -V
