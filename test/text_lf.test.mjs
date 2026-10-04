@@ -3,9 +3,10 @@
  */
 import assert from 'node:assert/strict'
 
+import { REPO_ROOT } from '../src/scripts/checks/repo_root.mjs'
 import {
 	detectFinalNewline, detectLeadingLf, detectNonLfLineEndings, fixFileTextLf, fixTextLf,
-	isUtf8Text, REPO_ROOT, scanFileTextLf, scanTextLf,
+	isUtf8Text, scanFileTextLf, scanTextLf,
 } from '../src/scripts/checks/text_lf.mjs'
 
 const encoder = new TextEncoder()

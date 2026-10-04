@@ -5,14 +5,12 @@
  * 开头不得为 LF（开头检查先跳过 UTF-8 BOM）。
  * 判定文本：整文件可 fatal UTF-8 解码且不含 NUL；空文件豁免。
  */
-import { execFile } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
 
-/** 仓库根目录。 */
-export const REPO_ROOT = fileURLToPath(new URL('../../..', import.meta.url))
+import { REPO_ROOT } from './repo_root.mjs'
+import { listRepoFiles } from './walk.mjs'
 
 const utf8Fatal = new TextDecoder('utf-8', { fatal: true })
 
@@ -155,39 +153,6 @@ export function fixFileTextLf(relativePath, bytes) {
 	fixed.set(body, bom ? 3 : 0)
 	if (fixed.length === bytes.length && fixed.every((byte, index) => byte === bytes[index])) return null
 	return fixed
-}
-
-/**
- * 经 git 列出仓库文件（已跟踪 + 未忽略未跟踪；尊重嵌套 gitignore）。
- * @param {string} repoRoot 仓库根
- * @returns {Promise<string[]>} 相对路径（正斜杠、已排序）
- */
-export async function listRepoFiles(repoRoot) {
-	/**
-	 * @param {string[]} args git 参数
-	 * @returns {Promise<string>} 原始 stdout
-	 */
-	function execGit(args) {
-		return new Promise((resolve, reject) => {
-			execFile('git', args, { cwd: repoRoot }, (error, stdout) => {
-				if (error) reject(error)
-				else resolve(String(stdout))
-			})
-		})
-	}
-	const [tracked, untracked] = await Promise.all([
-		execGit(['ls-files', '-z']),
-		execGit(['ls-files', '-z', '--others', '--exclude-standard']),
-	])
-	/** @type {Set<string>} */
-	const files = new Set()
-	for (const chunk of [tracked, untracked]) {
-		for (const file of chunk.split('\0')) {
-			const normalized = file.trim().replaceAll('\\', '/')
-			if (normalized) files.add(normalized)
-		}
-	}
-	return [...files].sort()
 }
 
 /**
