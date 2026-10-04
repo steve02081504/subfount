@@ -26,6 +26,7 @@ import {
 import { collectDeviceInfo, generateDeviceId } from './device.mjs'
 import { createRunCodeHandler, createShellExecHandler } from './handlers.mjs'
 import { createHostPool, DEVICE_INFO_INTERVAL_MS, readInfraPolicy } from './host.mjs'
+import { claimLocalService } from './local_service.mjs'
 import { killProcessTree } from './process.mjs'
 
 /** 主机断开 / 认证失败后的重连延迟（毫秒）。 */
@@ -84,6 +85,37 @@ if (args.length === 1) {
 	console.error('Usage: subfount [<host-room-id> <password> [host-node-hash]]')
 	process.exit(2)
 }
+
+let markReady
+const ready = new Promise(resolve => { markReady = resolve })
+const localService = await claimLocalService({
+	args,
+	/**
+	 * 接收另一个进程转发过来的启动参数：写入该主机并立即生效。
+	 * @param {string[]} incoming 转发的命令行参数
+	 */
+	onLaunch: async incoming => {
+		await ready
+		if (incoming.length >= 2) addConfiguredHost({ hostRoomId: incoming[0], password: incoming[1], hostNodeHash: incoming[2] || null })
+		await onConfigChanged()
+	},
+	/**
+	 * 回环状态快照，供网页端探测本机是否已有 subfount 在跑。
+	 * @returns {object} 状态快照
+	 */
+	getStatus: () => ({ service: 'subfount', nodeHash: p2p?.getNodeHash(), ready: Boolean(p2p?.getNodeHash()) }),
+	/**
+	 * 代网页端完成一次节点可达性证明。
+	 * @param {object} options 挑战参数
+	 * @returns {Promise<object>} 验证结果
+	 */
+	prove: async options => {
+		await ready
+		const { proveNetworkVerification } = await import('./verification.mjs')
+		return proveNetworkVerification(options)
+	},
+})
+if (!localService) process.exit(0)
 
 try {
 	; ({ on_shutdown } = await import('npm:on-shutdown'))
@@ -362,7 +394,7 @@ function startConfigWatcher() {
 let shuttingDown = false
 
 /**
- * 清理定时器、PID、房间与 infra（幂等，可安全重复调用）。
+ * 清理定时器、PID、房间、回环端点与 infra（幂等，可安全重复调用）。
  */
 async function shutdown() {
 	if (shuttingDown) return
@@ -372,6 +404,7 @@ async function shutdown() {
 	try { configWatch?.close() } catch { /* ignore */ }
 	clearDaemonPid()
 	await Promise.all([...sessions.values()].map(session => session.close()))
+	await localService.close()
 	if (p2p.isInfraRunning()) await p2p.stopInfra()
 }
 
@@ -406,5 +439,6 @@ startStopWatcher()
 statusInterval = setInterval(pushStatus, STATUS_INTERVAL_MS).unref()
 
 await onConfigChanged()
+markReady()
 
 on_shutdown(shutdown)
