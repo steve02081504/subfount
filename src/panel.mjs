@@ -16,10 +16,10 @@ import process from 'node:process'
 import inquirer from 'npm:inquirer'
 
 import {
-	ensureConfigFile, getDataDir, getRootDir, loadConfig, readDaemonPid, readStatus, saveConfig,
+	ensureConfigFile, getDataDir, getRootDir, loadConfig, readDaemonPid, readStatus, saveConfig, configuredHosts, addConfiguredHost, removeConfiguredHost,
 } from './config.mjs'
-import { isProcessAlive, killPid } from './process.mjs'
 import { t } from './i18n.mjs'
+import { isProcessAlive, killPid } from './process.mjs'
 
 /** 停止进程时等待其退出的轮询尝试次数与间隔（毫秒）。 */
 const STOP_POLL_ATTEMPTS = 30
@@ -108,43 +108,44 @@ function showStatus() {
 }
 
 /**
- * 编辑主机连接配置。
+ * 编辑主机连接配置（当前只暴露第一个主机；留空 roomId 即清空主机列表）。
  */
 async function editConnection() {
 	const current = loadConfig()
+	const host = configuredHosts(current)[0]
 	const answers = await inquirer.prompt([
 		{
 			type: 'input',
 			name: 'hostRoomId',
 			message: t('panel.roomId'),
-			default: current.hostRoomId || '',
+			default: host?.hostRoomId || '',
 		},
 		{
 			type: 'password',
 			name: 'password',
 			message: t('panel.password'),
 			mask: '*',
-			default: current.password || '',
+			default: host?.password || '',
 		},
 		{
 			type: 'input',
 			name: 'hostNodeHash',
 			message: t('panel.nodeHash'),
-			default: current.hostNodeHash || '',
+			default: host?.hostNodeHash || '',
 		},
 	])
 	cfg = {
-		...current,
-		hostRoomId: answers.hostRoomId?.trim() || null,
-		password: answers.password?.trim() || null,
+		hostRoomId: answers.hostRoomId?.trim(),
+		password: answers.password?.trim(),
 		hostNodeHash: answers.hostNodeHash?.trim() || null,
 	}
-	saveConfig(cfg)
+	if (cfg.hostRoomId && cfg.password) addConfiguredHost(cfg)
+	else removeConfiguredHost(host?.hostRoomId)
 	console.log(t('panel.saved'))
 }
 
 /**
- * 切换 infra 开关。
+ * 切换 infra 开关（无主机会话时是否参与 overlay 转发）。
  */
 async function toggleInfra() {
 	const current = loadConfig()

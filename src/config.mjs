@@ -33,9 +33,7 @@ export function getDataDir() {
  * 默认配置项。
  */
 export const DEFAULT_CONFIG = {
-	hostRoomId: null,
-	password: null,
-	hostNodeHash: null,
+	hosts: [],
 	infra: true,
 }
 
@@ -117,4 +115,56 @@ export function writeStatus(status) {
  */
 export function readStatus() {
 	try { return JSON.parse(fs.readFileSync(path.join(getDataDir(), 'status.json'), 'utf-8')) } catch { return null }
+}
+
+/**
+ * 归一化主机条目：补齐 hostNodeHash 并丢弃缺 roomId / password 的项；同 roomId 时后者覆盖前者。
+ * @param {object[]} hosts 原始主机条目
+ * @returns {{hostRoomId: string, password: string, hostNodeHash: string|null}[]} 归一化后的主机列表
+ */
+export function normalizeHosts(hosts) {
+	const unique = new Map()
+	for (const { hostRoomId, password, hostNodeHash } of hosts) {
+		if (!hostRoomId || !password) continue
+		unique.set(hostRoomId, { hostRoomId, password, hostNodeHash: hostNodeHash || null })
+	}
+	return [...unique.values()]
+}
+
+/**
+ * 列出配置中的主机（已归一化，可直接建立会话）。
+ * @param {object} config 配置对象
+ * @returns {{hostRoomId: string, password: string, hostNodeHash: string|null}[]} 主机列表
+ */
+export function configuredHosts(config) {
+	return normalizeHosts(config.hosts)
+}
+
+/**
+ * 整体替换主机列表（同 roomId 去重）。
+ * @param {object[]} hosts 主机条目
+ * @returns {{hostRoomId: string, password: string, hostNodeHash: string|null}[]} 实际保存的主机列表
+ */
+export function setConfiguredHosts(hosts) {
+	const normalized = normalizeHosts(hosts)
+	saveConfig({ ...loadConfig(), hosts: normalized })
+	return normalized
+}
+
+/**
+ * 追加或更新一个主机，其它主机保持不变。
+ * @param {{hostRoomId: string, password: string, hostNodeHash?: string|null}} host 要写入的主机
+ * @returns {{hostRoomId: string, password: string, hostNodeHash: string|null}[]} 保存后的主机列表
+ */
+export function addConfiguredHost(host) {
+	return setConfiguredHosts([...configuredHosts(loadConfig()), host])
+}
+
+/**
+ * 删除一个主机。
+ * @param {string} hostRoomId 要删除的主机 roomId
+ * @returns {{hostRoomId: string, password: string, hostNodeHash: string|null}[]} 保存后的主机列表
+ */
+export function removeConfiguredHost(hostRoomId) {
+	return setConfiguredHosts(configuredHosts(loadConfig()).filter(host => host.hostRoomId !== hostRoomId))
 }
