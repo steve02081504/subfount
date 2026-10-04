@@ -66,6 +66,7 @@ try {
 	Pop-NativeCommandErrors $ErrorCount
 	if ($ErrorCount -ne $Error.Count) { exit 1 }
 	exit $LastExitCode
-} finally {
+}
+finally {
 	$ErrorActionPreference = $script:SubfCallerErrorActionPreference
 }

@@ -17,7 +17,7 @@ function makeActions() {
 }
 
 const host = { hostNodeHash: 'host-hash' }
-const sendDeviceInfoToHost = async () => {}
+const sendDeviceInfoToHost = async () => { }
 
 /**
  * 轮询等待条件成立。

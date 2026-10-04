@@ -38,7 +38,7 @@ export function createCallbackSessionRuntime({ authorize, send, evaluate, leaseM
 		const cleanups = [...entry.cleanups]
 		entry.cleanups.clear()
 		for (const cleanup of cleanups)
-			try { Promise.resolve(cleanup()).catch(() => {}) } catch { /* 单个清理失败不阻塞其它资源 */ }
+			try { Promise.resolve(cleanup()).catch(() => { }) } catch { /* 单个清理失败不阻塞其它资源 */ }
 	}
 
 	/**
@@ -57,7 +57,7 @@ export function createCallbackSessionRuntime({ authorize, send, evaluate, leaseM
 		release(entry, reason)
 		entry.queue.length = 0
 		entry.queuedBytes = 0
-		if (notify) void Promise.resolve().then(() => send({ id: entry.id, type: 'end', reason }, entry.peerId)).catch(() => {})
+		if (notify) void Promise.resolve().then(() => send({ id: entry.id, type: 'end', reason }, entry.peerId)).catch(() => { })
 	}
 
 	/**
@@ -158,7 +158,7 @@ export function createCallbackSessionRuntime({ authorize, send, evaluate, leaseM
 			 * @param {Function} cleanup 清理函数，应快速释放资源
 			 */
 			onDispose: cleanup => {
-				if (entry.closed || entry.ending) { try { Promise.resolve(cleanup()).catch(() => {}) } catch { /* ignore */ } }
+				if (entry.closed || entry.ending) { try { Promise.resolve(cleanup()).catch(() => { }) } catch { /* ignore */ } }
 				else entry.cleanups.add(cleanup)
 			},
 		}

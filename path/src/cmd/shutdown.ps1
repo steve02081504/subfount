@@ -15,7 +15,7 @@
 				Stop-Process -Id $pidValue -Force -ErrorAction SilentlyContinue
 			}
 		}
-		Remove-Item $pidFile,$stopFile -Force -ErrorAction Ignore
+		Remove-Item $pidFile, $stopFile -Force -ErrorAction Ignore
 	}
 	Write-Host (Get-I18n -key 'shutdown.complete')
 }

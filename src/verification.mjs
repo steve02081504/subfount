@@ -127,7 +127,7 @@ export function attachNetworkVerification() {
 	return attachNodeScopeFeature('verification', wire => {
 		const current = getNetworkVerificationService()
 		const disposers = ['verification_claim', 'verification_receipt'].map(action => wire.on(action, (payload, sender) => {
-			void current.receive(action, payload, sender).catch(() => {})
+			void current.receive(action, payload, sender).catch(() => { })
 		}))
 		return () => { for (const dispose of disposers) dispose(); service = null }
 	})
