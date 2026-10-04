@@ -16,6 +16,7 @@
 | `src/config.mjs` | The only writer of `data/`: `config.json` (tab-indented JSON), `status.json` (atomic `.tmp` + rename), `daemon.pid`. A missing or corrupt file falls back to `DEFAULT_CONFIG` instead of throwing. |
 | `src/host.mjs` | Per-host assist policy: device info and reputation pull every 15 min; `createHostPool` shares one infra across sessions so one host cannot take another host's infra down. |
 | `src/handlers.mjs` | The `run_code` (async-eval) and `shell_exec` (exec) handlers. Both ignore any peer that is not the authenticated host. |
+| `src/callback_sessions.mjs` | Generic long-lived callback producers: `callback_session` open/renew/cancel, ready/event/heartbeat/end frames, bounded ordered events, 30 s leases, cooperative abort and immediate resource disposal on disconnect. Initialization receives `callbackSession` with emit/onDispose/signal/close and must return without awaiting its long-running loop. |
 | `src/device.mjs` | Stable device id (hash of host facts) plus soft-failing device-info collectors. |
 | `src/local_service.mjs` | Loopback single-instance guard and CLI forwarding on `127.0.0.1:${SUBFOUNT_LOCAL_PORT:-8932}`. A second launch forwards its arguments to the running instance and exits 0. |
 | `src/verification.mjs` | Bounded node-reachability proof (claim / receipt), bridged into fount-p2p until upstream publishes the entry point. |

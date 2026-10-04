@@ -17,7 +17,7 @@
 		"help": "deno run --allow-scripts --allow-all src/index.mjs --help",
 		"test": "deno test --allow-all --allow-scripts",
 		"lint": "deno lint",
-		"check": "deno check --all src/index.mjs src/panel.mjs src/config.mjs src/process.mjs src/host.mjs src/handlers.mjs src/device.mjs src/i18n.mjs"
+		"check": "deno check --all src/index.mjs src/panel.mjs src/config.mjs src/process.mjs src/host.mjs src/handlers.mjs src/device.mjs src/i18n.mjs src/callback_sessions.mjs"
 	},
 	"imports": {
 		"npm:inquirer": "npm:inquirer@^14.2.0",

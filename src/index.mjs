@@ -25,6 +25,7 @@ import {
 } from './config.mjs'
 import { collectDeviceInfo, generateDeviceId } from './device.mjs'
 import { createRunCodeHandler, createShellExecHandler } from './handlers.mjs'
+import { createCallbackSessionRuntime } from './callback_sessions.mjs'
 import { createHostPool, DEVICE_INFO_INTERVAL_MS, readInfraPolicy } from './host.mjs'
 import { claimLocalService } from './local_service.mjs'
 import { killProcessTree } from './process.mjs'
@@ -197,8 +198,27 @@ function createHostSession(hostConfig) {
 			await actions.sendDeviceInfo(info, host.hostNodeHash)
 	}
 
+	/**
+	 * 该 peer 是否为当前已认证主机。
+	 * @param {string} peerId 待检查的 peer
+	 * @returns {boolean} 是否已认证主机
+	 */
+	const isAuthenticatedHost = peerId => authenticated && peerId === host.hostNodeHash
+
 	const handleRunCode = createRunCodeHandler({ host, actions, sendDeviceInfoToHost })
 	const handleShellExec = createShellExecHandler({ host, actions })
+	const callbackSessions = createCallbackSessionRuntime({
+		authorize: isAuthenticatedHost,
+		send: async (frame, peerId) => {
+			if (!await room.sendToPeer(peerId, 'callback_session_event', frame)) throw new Error('Host link unavailable')
+		},
+		evaluate: async (script, context) => {
+			const { async_eval } = await import('npm:@steve02081504/async-eval')
+			const { result, error } = await async_eval(script, context)
+			if (error) throw error
+			return result
+		},
+	})
 
 	/**
 	 * 注册房间动作：认证、设备信息、infra 策略与主机指令。
@@ -210,6 +230,8 @@ function createHostSession(hostConfig) {
 			response: ['sendResponse', null],
 			run_code: [null, 'getRunCode'],
 			callback: ['sendCallback', null],
+			callback_session: [null, 'getCallbackSession'],
+			callback_session_event: ['sendCallbackSessionEvent', null],
 			shell_exec: [null, 'getShellExec'],
 			shell_spawned: ['sendShellSpawned', null],
 			kill: [null, 'getKill'],
@@ -243,7 +265,7 @@ function createHostSession(hostConfig) {
 		})
 
 		actions.getInfra((data, peerId) => {
-			if (!authenticated || peerId !== host.hostNodeHash) return
+			if (!isAuthenticatedHost(peerId)) return
 			void host.applyInfra(readInfraPolicy(data), authenticated)
 			pushStatus()
 		})
@@ -254,9 +276,10 @@ function createHostSession(hostConfig) {
 		 * @returns {Function} 包装后的消息处理函数
 		 */
 		const handleAuthenticatedRequest = handler => (message, peerId) => {
-			if (authenticated && peerId === host.hostNodeHash) handler(message, peerId)
+			if (isAuthenticatedHost(peerId)) handler(message, peerId)
 		}
 		actions.getRunCode(handleAuthenticatedRequest(handleRunCode))
+		actions.getCallbackSession((message, peerId) => { void callbackSessions.handle(message, peerId).catch(error => console.error('Callback session:', error)) })
 		actions.getShellExec(handleAuthenticatedRequest(handleShellExec))
 		actions.getKill(handleAuthenticatedRequest(({ pid }) => {
 			if (pid) killProcessTree(pid)
@@ -340,6 +363,7 @@ function createHostSession(hostConfig) {
 		 */
 		async close() {
 			disposed = true
+			callbackSessions.dispose()
 			for (const timer of retryTimers) clearTimeout(timer)
 			clearInterval(deviceInfoUpdateInterval)
 			if (room) await room.leave()
