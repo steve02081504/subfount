@@ -17,7 +17,7 @@ subfount_first_install_if_needed() {
 		fi
 		run_deno install --allow-scripts --allow-all -c "$SUBFOUNT_DIR/deno.json" --entrypoint "$SUBFOUNT_DIR/src/index.mjs" || true
 		write_taskbar_progress 85
-		if ! in_container; then
+		if ! in_docker; then
 			register_boot_background || true
 		fi
 		ensure_subfount_path || true

@@ -2,15 +2,33 @@
 # Login autostart for background keepalive
 
 register_boot_background() {
-	if in_container; then
+	if in_docker; then
 		return 0
 	fi
 	if [ -f "$SUBFOUNT_DIR/.noautoboot" ]; then
 		return 0
 	fi
 	local launcher="$SUBFOUNT_DIR/path/subfount"
+	if in_termux; then
+		# Termux:Boot 会在开机时执行 ~/.termux/boot/ 下的脚本。
+		mkdir -p "$HOME/.termux/boot"
+		cat >"$HOME/.termux/boot/subfount" <<EOF
+#!/data/data/com.termux/files/usr/bin/bash
+termux-wake-lock 2>/dev/null || true
+exec "$launcher" background keepalive
+EOF
+		chmod +x "$HOME/.termux/boot/subfount"
+		return 0
+	fi
 	case "$OS_TYPE" in
 	Linux)
+		if command -v crontab >/dev/null 2>&1; then
+			# 无图形界面的机器靠 @reboot 拉起；标记注释保证重复注册只留一条。
+			local quoted_launcher
+			quoted_launcher=$(printf '%s' "$launcher" | sed "s/'/'\\''/g")
+			# shellcheck disable=SC2016
+			{ crontab -l 2>/dev/null | sed '/# subfount-autostart$/d'; printf "@reboot '%s' background keepalive # subfount-autostart\n" "$quoted_launcher"; } | crontab -
+		fi
 		mkdir -p "$HOME/.config/autostart"
 		local desk="$HOME/.config/autostart/subfount-background.desktop"
 		cat >"$desk" <<EOF

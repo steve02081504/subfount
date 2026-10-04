@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
+if in_termux; then
+	rm -f "$HOME/.termux/boot/subfount"
+fi
 case "$OS_TYPE" in
 Linux)
+	if command -v crontab >/dev/null 2>&1; then
+		# shellcheck disable=SC2016
+		(crontab -l 2>/dev/null | sed '/# subfount-autostart$/d') | crontab -
+	fi
 	rm -f "$HOME/.config/autostart/subfount-background.desktop"
 	;;
 Darwin)
