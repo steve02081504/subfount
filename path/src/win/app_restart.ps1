@@ -1,4 +1,7 @@
-﻿Add-Type -TypeDefinition @'
+﻿function script:Initialize-SubfRestartType {
+	if (!$IsWindows) { return $false }
+	if ($script:SubfRestartTypeReady) { return $true }
+	Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 public class SubfRestart {
@@ -8,11 +11,15 @@ public class SubfRestart {
 	public static extern int UnregisterApplicationRestart();
 }
 '@ -ErrorAction SilentlyContinue | Out-Null
+	$script:SubfRestartTypeReady = $true
+	return $true
+}
 
 # 智能自启动：向 Windows 注册“系统重启/更新后恢复”
 function script:Register-SubfApplicationRestart {
 	if (!$IsWindows) { return }
 	if ($script:SubfRestartRegistered) { return }
+	if (-not (Initialize-SubfRestartType)) { return }
 	$script:SubfRestartRegistered = $true
 	$restartArgs = ''
 	if ($env:SUBFOUNT_BACKGROUND) {
@@ -29,5 +36,6 @@ function script:Register-SubfApplicationRestart {
 function script:Unregister-SubfApplicationRestart {
 	if (!$IsWindows) { return }
 	Remove-Item Env:\SUBFOUNT_RESTART_REGISTERED -Force -ErrorAction Ignore
+	Initialize-SubfRestartType | Out-Null
 	[SubfRestart]::UnregisterApplicationRestart() | Out-Null
 }
