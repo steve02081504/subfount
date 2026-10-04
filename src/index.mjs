@@ -89,6 +89,8 @@ try {
 	; ({ on_shutdown } = await import('npm:on-shutdown'))
 	p2p = await import('npm:@steve02081504/fount-p2p')
 	await p2p.startNode({ nodeDir: path.join(getDataDir(), 'p2p') })
+	const { attachNetworkVerification } = await import('./verification.mjs')
+	attachNetworkVerification()
 }
 catch (error) {
 	console.error('\nFailed to load dependencies:', error.message)
