@@ -268,7 +268,7 @@ import_subfount_locale() {
 
 new_args=("$@")
 if [[ "${#new_args[@]}" -eq 0 ]]; then
-	new_args=("open")
+	new_args=("background" "keepalive")
 fi
 
 install_subfount_tree() {

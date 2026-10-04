@@ -228,7 +228,7 @@ if (!$env:SUBFOUNT_DIR) {
 
 $forwardedArgs = @($args)
 if ($forwardedArgs.Count -eq 0) {
-	$forwardedArgs = @("open")
+	$forwardedArgs = @("background", "keepalive")
 }
 
 function RefreshPath {
