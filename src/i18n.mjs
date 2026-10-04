@@ -72,17 +72,14 @@ export function getI18n(key, params) {
 		try {
 			data = JSON.parse(fs.readFileSync(path.join(localesDir, `${loc}.json`), 'utf-8'))
 		}
-		catch { /* fall back to empty data */ }
+		catch { /* 读取失败则退回空表 */ }
 		cache = { loc, data }
 	}
 	let value = cache.data
 	for (const part of key.split('.')) value = value?.[part]
 	if (typeof value !== 'string') return key
-	if (params) 
-		for (const [name, val] of Object.entries(params)) 
-			value = value.replaceAll(`\${${name}}`, String(val))
-		
-	
+	for (const [name, val] of Object.entries(params ?? {}))
+		value = value.replaceAll(`\${${name}}`, String(val))
 	return value
 }
 
