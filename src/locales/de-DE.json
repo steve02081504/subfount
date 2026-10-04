@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Remote-Referenz ${ref} nicht verfügbar.",
 			"repoNotFound": "Repository nicht gefunden.",
 			"updatingFromRemote": "Aktualisierung vom Remote...",
-			"upstreamGoneFallbackMaster": "Upstream-Zweig ist verschwunden; Rückgriff auf master."
+			"upstreamGoneFallbackMaster": "Upstream-Zweig ist verschwunden; Rückgriff auf master.",
+			"unrelatedHistories": "Lokales und entferntes Repository haben keine gemeinsame Historie. Erzwungenes Update läuft …"
 		},
 		"install": {
 			"browserMissing": "Kein Browser gefunden; Chrome wird installiert...",

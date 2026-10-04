@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Referência remota ${ref} indisponível.",
 			"repoNotFound": "Repositório não encontrado.",
 			"updatingFromRemote": "Atualizando do remoto...",
-			"upstreamGoneFallbackMaster": "A ramificação upstream desapareceu; recorrendo ao master."
+			"upstreamGoneFallbackMaster": "A ramificação upstream desapareceu; recorrendo ao master.",
+			"unrelatedHistories": "Local and remote histories have no common ancestor; resetting to the remote branch."
 		},
 		"install": {
 			"browserMissing": "Nenhum navegador encontrado; instalando o Chrome...",

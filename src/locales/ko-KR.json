@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "원격 참조 ${ref}를 사용할 수 없습니다.",
 			"repoNotFound": "리포지토리를 찾을 수 없습니다.",
 			"updatingFromRemote": "원격에서 업데이트 중...",
-			"upstreamGoneFallbackMaster": "업스트림 브랜치가 사라져 master로 대체합니다."
+			"upstreamGoneFallbackMaster": "업스트림 브랜치가 사라져 master로 대체합니다.",
+			"unrelatedHistories": "로컬 및 원격 저장소에 공통 기록이 없습니다. 강제 업데이트 중…"
 		},
 		"install": {
 			"browserMissing": "브라우저를 찾을 수 없어 Chrome을 설치 중...",

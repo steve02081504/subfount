@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Référence distante ${ref} indisponible.",
 			"repoNotFound": "Dépôt introuvable.",
 			"updatingFromRemote": "Mise à jour depuis le dépôt distant...",
-			"upstreamGoneFallbackMaster": "La branche amont a disparu ; repli sur master."
+			"upstreamGoneFallbackMaster": "La branche amont a disparu ; repli sur master.",
+			"unrelatedHistories": "Les dépôts local et distant n’ont aucun historique commun. Mise à jour forcée…"
 		},
 		"install": {
 			"browserMissing": "Aucun navigateur trouvé ; installation de Chrome...",

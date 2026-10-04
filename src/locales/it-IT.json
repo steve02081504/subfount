@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Riferimento remoto ${ref} non disponibile.",
 			"repoNotFound": "Repository non trovato.",
 			"updatingFromRemote": "Aggiornamento dal remoto...",
-			"upstreamGoneFallbackMaster": "Il ramo upstream non esiste più; ripiego su master."
+			"upstreamGoneFallbackMaster": "Il ramo upstream non esiste più; ripiego su master.",
+			"unrelatedHistories": "Il repository locale e quello remoto non hanno una cronologia in comune. Aggiornamento forzato…"
 		},
 		"install": {
 			"browserMissing": "Nessun browser trovato; installazione di Chrome...",

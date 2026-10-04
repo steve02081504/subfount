@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Удалённая ссылка ${ref} недоступна.",
 			"repoNotFound": "Репозиторий не найден.",
 			"updatingFromRemote": "Обновление из удалённого репозитория...",
-			"upstreamGoneFallbackMaster": "Восходящая ветка исчезла; переход на master."
+			"upstreamGoneFallbackMaster": "Восходящая ветка исчезла; переход на master.",
+			"unrelatedHistories": "У локального и удалённого репозиториев нет общей истории. Выполняется принудительное обновление…"
 		},
 		"install": {
 			"browserMissing": "Браузер не найден; установка Chrome...",

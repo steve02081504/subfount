@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "リモート参照 ${ref} は利用できません。",
 			"repoNotFound": "リポジトリが見つかりません。",
 			"updatingFromRemote": "リモートから更新しています...",
-			"upstreamGoneFallbackMaster": "上流ブランチが消えたため、master にフォールバックします。"
+			"upstreamGoneFallbackMaster": "上流ブランチが消えたため、master にフォールバックします。",
+			"unrelatedHistories": "ローカルとリモートのリポジトリに共通の履歴がありません。強制更新中…"
 		},
 		"install": {
 			"browserMissing": "ブラウザが見つかりません。Chrome をインストールしています...",

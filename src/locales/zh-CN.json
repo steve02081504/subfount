@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "远端引用 ${ref} 不可用。",
 			"repoNotFound": "未找到仓库。",
 			"updatingFromRemote": "正在从远端更新...",
-			"upstreamGoneFallbackMaster": "上游分支已消失，回退到 master。"
+			"upstreamGoneFallbackMaster": "上游分支已消失，回退到 master。",
+			"unrelatedHistories": "本地与远程仓库没有共同历史。强制更新中..."
 		},
 		"install": {
 			"browserMissing": "未找到浏览器，正在安装 Chrome...",

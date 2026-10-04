@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "Tham chiếu remote ${ref} không khả dụng.",
 			"repoNotFound": "Không tìm thấy kho lưu trữ.",
 			"updatingFromRemote": "Đang cập nhật từ remote...",
-			"upstreamGoneFallbackMaster": "Nhánh upstream không còn; chuyển sang master."
+			"upstreamGoneFallbackMaster": "Nhánh upstream không còn; chuyển sang master.",
+			"unrelatedHistories": "Kho cục bộ và kho từ xa không có lịch sử chung. Đang buộc cập nhật…"
 		},
 		"install": {
 			"browserMissing": "Không tìm thấy trình duyệt; đang cài Chrome...",

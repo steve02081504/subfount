@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "La referencia remota ${ref} no está disponible.",
 			"repoNotFound": "Repositorio no encontrado.",
 			"updatingFromRemote": "Actualizando desde el remoto...",
-			"upstreamGoneFallbackMaster": "La rama upstream desapareció; recurriendo a master."
+			"upstreamGoneFallbackMaster": "La rama upstream desapareció; recurriendo a master.",
+			"unrelatedHistories": "Los repositorios local y remoto no comparten historial. Forzando actualización…"
 		},
 		"install": {
 			"browserMissing": "No se encontró ningún navegador; instalando Chrome...",

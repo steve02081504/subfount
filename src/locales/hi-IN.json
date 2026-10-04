@@ -77,7 +77,8 @@
 			"remoteRefUnavailable": "रिमोट रेफ़ ${ref} अनुपलब्ध है।",
 			"repoNotFound": "रिपॉज़िटरी नहीं मिली।",
 			"updatingFromRemote": "रिमोट से अपडेट हो रहा है...",
-			"upstreamGoneFallbackMaster": "upstream शाखा गायब है; master पर वापस जा रहे हैं।"
+			"upstreamGoneFallbackMaster": "upstream शाखा गायब है; master पर वापस जा रहे हैं।",
+			"unrelatedHistories": "स्थानीय और दूरस्थ रिपॉज़िटरी का इतिहास साझा नहीं है। ज़बरन अपडेट हो रहा है…"
 		},
 		"install": {
 			"browserMissing": "कोई ब्राउज़र नहीं मिला; Chrome स्थापित किया जा रहा है...",
