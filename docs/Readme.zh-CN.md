@@ -101,7 +101,7 @@ subfount remove
 .\run.bat
 ```
 
-不带参数运行会打开配置面板并在后台启动守护进程。
+不带参数运行会在后台启动守护进程并自动重启。用 `subfount open`（或在 `run.sh` 后加 `open`）打开配置面板来设置主机。
 
 ## 用法
 
@@ -110,14 +110,14 @@ subfount remove
 ### 配置面板
 
 ```sh
-subfount open        # 或：run.sh（不带参数）
+subfount open        # 或：run.sh open
 ```
 
 面板支持：
 
 - 设置**主机房间 ID** 和**密码**（留空则为纯 infra 模式）
 - 可选设置主机 **nodeHash**（来自连接码 API）
-- 切换**infra 参与**
+- 切换**infra 参与**（未配置主机时是否转发；已连接主机的策略优先）
 - 查看守护进程状态（PID、nodeHash、模式、已连接主机）
 - **启动** / **停止**守护进程
 
@@ -126,7 +126,7 @@ subfount open        # 或：run.sh（不带参数）
 ```sh
 subfount                                    # 仅 infra（从 data/config.json 读取）
 subfount <host-room-id> <password> [node-hash]
-    # infra + 主机工作/优先帮扶（一次性，不持久化）
+    # infra + 主机工作/优先帮扶（写入一个持久主机，其它主机保持连接）
 ```
 
 ### 其他命令
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## 配置
 
-守护进程读取 `data/config.json`。面板会为你编辑它，你也可以在守护进程运行期间手动编辑（将在下次连接尝试时生效）。
+守护进程读取 `data/config.json`。面板会为你编辑它，你也可以在守护进程运行期间手动编辑：守护进程监听该文件，数秒内即可生效，无需重启。`hosts` 中每一项都是一个独立的主机会话；`infra` 只决定未配置主机时是否继续转发（已连接主机的策略优先）。
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

@@ -1,4 +1,4 @@
-﻿# subfount
+# subfount
 
 [![fount repo](https://steve02081504.github.io/fount/badges/fount_repo.svg)](https://github.com/steve02081504/fount)
 
@@ -101,7 +101,7 @@ subfount remove
 .\run.bat
 ```
 
-引数なしで実行すると設定パネルが開き、バックグラウンドでデーモンが起動します。
+引数なしで実行すると、デーモンがバックグラウンドで自動再起動付きで起動します。ホストを設定するには、`subfount open`（または `run.sh` の後に `open` を追加）で設定パネルを開いてください。
 
 ## 使い方
 
@@ -110,14 +110,14 @@ subfount remove
 ### 設定パネル
 
 ```sh
-subfount open        # または：run.sh（引数なし）
+subfount open        # または：run.sh open
 ```
 
 パネルでできること：
 
 - **ホストのルーム ID** と**パスワード**の設定（空欄の場合は infra のみのモード）
 - ホストの **nodeHash** のオプション設定（接続コード API から取得）
-- **infra 参加**の切り替え
+- **infra 参加**の切り替え（ホストが未設定のときはリレーするかどうか。接続中のホスト自身のポリシーが優先）
 - デーモンの状態確認（PID、nodeHash、モード、接続中のホスト）
 - デーモンの**起動** / **停止**
 
@@ -126,7 +126,7 @@ subfount open        # または：run.sh（引数なし）
 ```sh
 subfount                                    # infra のみ（data/config.json から読み込み）
 subfount <host-room-id> <password> [node-hash]
-    # infra + ホストワーカー / 優先アシスト（一度きり、永続化しない）
+    # infra + ホストワーカー / 優先アシスト（永続ホストを書き込み、他のホストは接続を維持）
 ```
 
 ### その他のコマンド
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## 設定
 
-デーモンは `data/config.json` を読み取ります。パネルが編集してくれますが、デーモン実行中に手動で編集することもできます（次の接続試行時に反映されます）。
+デーモンは `data/config.json` を読み取ります。パネルが編集してくれますが、デーモン実行中に手動で編集することもできます：デーモンはファイルを監視し、再起動なしで数秒以内に変更を反映します。`hosts` の各項目は独立したホストセッションであり、`infra` は、ホストが未設定のときにデーモンがリレーを続けるかどうかだけを決めます（接続中のホスト自身のポリシーが優先）。
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

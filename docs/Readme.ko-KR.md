@@ -101,7 +101,7 @@ subfount remove
 .\run.bat
 ```
 
-인수 없이 실행하면 구성 패널이 열리고 데몬이 백그라운드에서 시작됩니다.
+인수 없이 실행하면 데몬이 자동 재시작과 함께 백그라운드에서 시작됩니다. 호스트를 설정하려면 `subfount open`(또는 `run.sh` 뒤에 `open` 추가)으로 구성 패널을 여세요.
 
 ## 사용법
 
@@ -110,14 +110,14 @@ subfount remove
 ### 구성 패널
 
 ```sh
-subfount open        # 또는: run.sh (인수 없음)
+subfount open        # 또는: run.sh open
 ```
 
 패널에서 할 수 있는 작업:
 
 - **호스트 룸 ID** 및 **비밀번호** 설정(infra 전용 모드는 비워 둠)
 - 선택적으로 호스트 **nodeHash** 설정(연결 코드 API에서)
-- **infra 참여** 전환
+- **infra 참여** 전환(호스트가 구성되지 않았을 때 중계할지 여부, 연결된 호스트 자체 정책이 우선)
 - 데몬 상태 보기(PID, nodeHash, 모드, 연결된 호스트)
 - 데몬 **시작** / **중지**
 
@@ -126,7 +126,7 @@ subfount open        # 또는: run.sh (인수 없음)
 ```sh
 subfount                                    # infra 전용 (data/config.json에서)
 subfount <host-room-id> <password> [node-hash]
-    # infra + 호스트 워커 / 우선 지원 (일회성, 유지되지 않음)
+    # infra + 호스트 워커 / 우선 지원 (영구 호스트를 기록하며, 다른 호스트는 연결을 유지함)
 ```
 
 ### 기타 명령
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## 구성
 
-데몬은 `data/config.json`을 읽습니다. 패널이 대신 편집하며, 데몬이 실행 중일 때 수동으로 편집할 수도 있습니다(다음 연결 시도 시 적용됨).
+데몬은 `data/config.json`을 읽습니다. 패널이 대신 편집하며, 데몬이 실행 중일 때 수동으로 편집할 수도 있습니다: 데몬이 파일을 감시하여 재시작 없이 몇 초 안에 변경 사항을 적용합니다. `hosts`의 각 항목은 하나의 독립적인 호스트 세션입니다. `infra`는 호스트가 구성되지 않았을 때 데몬이 계속 중계할지 여부만 결정합니다(연결된 호스트 자체 정책이 우선).
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

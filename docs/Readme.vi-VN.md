@@ -101,7 +101,7 @@ Nhân bản hoặc tải xuống kho lưu trữ này, rồi chạy runner ở th
 .\run.bat
 ```
 
-Chạy không có đối số sẽ mở bảng cấu hình và khởi động daemon ở chế độ nền.
+Chạy không có đối số sẽ khởi động daemon ở chế độ nền với tự động khởi động lại. Mở bảng cấu hình bằng `subfount open` (hoặc thêm `open` sau `run.sh`) để thiết lập máy chủ.
 
 ## Sử dụng
 
@@ -110,14 +110,14 @@ Chạy không có đối số sẽ mở bảng cấu hình và khởi động da
 ### Bảng cấu hình
 
 ```sh
-subfount open        # hoặc: run.sh (không đối số)
+subfount open        # hoặc: run.sh open
 ```
 
 Bảng cho phép bạn:
 
 - Đặt **ID phòng của máy chủ** và **mật khẩu** (để trống cho chế độ chỉ infra)
 - Tùy chọn đặt **nodeHash** của máy chủ (từ API mã kết nối)
-- Bật/tắt **tham gia infra**
+- Bật/tắt **tham gia infra** (chuyển tiếp khi chưa cấu hình máy chủ nào; chính sách của máy chủ đã kết nối được ưu tiên)
 - Xem trạng thái daemon (PID, nodeHash, chế độ, máy chủ đã kết nối)
 - **Khởi động** / **dừng** daemon
 
@@ -126,7 +126,7 @@ Bảng cho phép bạn:
 ```sh
 subfount                                    # chỉ infra (từ data/config.json)
 subfount <host-room-id> <password> [node-hash]
-    # infra + nút công việc máy chủ / hỗ trợ ưu tiên (một lần, không lưu trữ)
+    # infra + nút công việc máy chủ / hỗ trợ ưu tiên (ghi một máy chủ lâu dài; các máy chủ khác vẫn kết nối)
 ```
 
 ### Các lệnh khác
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## Cấu hình
 
-Daemon đọc `data/config.json`. Bảng cấu hình sẽ chỉnh sửa cho bạn và bạn cũng có thể chỉnh sửa thủ công khi daemon đang chạy (áp dụng ở lần thử kết nối tiếp theo).
+Daemon đọc `data/config.json`. Bảng cấu hình sẽ chỉnh sửa cho bạn và bạn cũng có thể chỉnh sửa thủ công khi daemon đang chạy: daemon theo dõi tệp và áp dụng thay đổi trong vài giây, không cần khởi động lại. Mỗi mục trong `hosts` là một phiên máy chủ độc lập; `infra` chỉ quyết định liệu daemon có tiếp tục chuyển tiếp khi chưa cấu hình máy chủ nào hay không (chính sách của máy chủ đã kết nối được ưu tiên).
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

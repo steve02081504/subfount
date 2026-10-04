@@ -101,7 +101,7 @@ Clone or download this repository, then run the runner in the repo root:
 .\run.bat
 ```
 
-Running with no arguments opens the configuration panel and starts the daemon in the background.
+Running with no arguments starts the daemon in the background with auto-restart. Open the configuration panel with `subfount open` (or add `open` after `run.sh`) to set up hosts.
 
 ## Usage
 
@@ -110,14 +110,14 @@ The main entry points are the runner scripts (`run`, `run.bat`, `run.cmd`, `run.
 ### Configuration panel
 
 ```sh
-subfount open        # or: run.sh (no arguments)
+subfount open        # or: run.sh open
 ```
 
 The panel lets you:
 
 - Set the **host room ID** and **password** (leave empty for infra-only mode)
 - Optionally set the host **nodeHash** (from the connection-code API)
-- Toggle **infra participation**
+- Toggle **infra participation** (relay while no host is configured; a connected host's own policy wins)
 - View the daemon status (PID, nodeHash, mode, connected host)
 - **Start** / **Stop** the daemon
 
@@ -126,7 +126,7 @@ The panel lets you:
 ```sh
 subfount                                    # infra only (from data/config.json)
 subfount <host-room-id> <password> [node-hash]
-    # infra + host worker / priority assist (one-off, does not persist)
+    # infra + host worker / priority assist (adds a persistent host; other hosts stay connected)
 ```
 
 ### Other commands
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## Configuration
 
-The daemon reads `data/config.json`. The panel edits it for you, and you can also edit it manually while the daemon is running (it is applied on the next connection attempt).
+The daemon reads `data/config.json`. The panel edits it for you, and you can also edit it manually while the daemon is running: the daemon watches the file and applies changes within seconds, without a restart. Each entry in `hosts` is one independent host session; `infra` only decides whether the daemon keeps relaying when no host is configured (a connected host's own policy wins).
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

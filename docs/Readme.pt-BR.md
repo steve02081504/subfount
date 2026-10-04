@@ -101,7 +101,7 @@ Clone ou baixe este repositório e execute o runner na raiz do repositório:
 .\run.bat
 ```
 
-Executar sem argumentos abre o painel de configuração e inicia o daemon em segundo plano.
+Executar sem argumentos inicia o daemon em segundo plano com reinício automático. Abra o painel de configuração com `subfount open` (ou adicione `open` depois de `run.sh`) para configurar hosts.
 
 ## Uso
 
@@ -110,14 +110,14 @@ Os principais pontos de entrada são os scripts do runner (`run`, `run.bat`, `ru
 ### Painel de configuração
 
 ```sh
-subfount open        # ou: run.sh (sem argumentos)
+subfount open        # ou: run.sh open
 ```
 
 O painel permite:
 
 - Definir o **ID da sala do host** e a **senha** (deixe vazio para o modo apenas infra)
 - Definir opcionalmente o **nodeHash** do host (da API do código de conexão)
-- Alternar a **participação na infra**
+- Alternar a **participação na infra** (retransmitir enquanto nenhum host estiver configurado; a política do próprio host conectado tem prioridade)
 - Ver o status do daemon (PID, nodeHash, modo, host conectado)
 - **Iniciar** / **parar** o daemon
 
@@ -126,7 +126,7 @@ O painel permite:
 ```sh
 subfount                                    # apenas infra (de data/config.json)
 subfount <host-room-id> <password> [node-hash]
-    # infra + nó de trabalho do host / assistência prioritária (pontual, não persistente)
+    # infra + nó de trabalho do host / assistência prioritária (adiciona um host persistente; os outros hosts permanecem conectados)
 ```
 
 ### Outros comandos
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## Configuração
 
-O daemon lê `data/config.json`. O painel o edita por você, e você também pode editá-lo manualmente enquanto o daemon está em execução (é aplicado na próxima tentativa de conexão).
+O daemon lê `data/config.json`. O painel o edita por você, e você também pode editá-lo manualmente enquanto o daemon está em execução: o daemon monitora o arquivo e aplica as alterações em segundos, sem reiniciar. Cada entrada em `hosts` é uma sessão de host independente; `infra` apenas decide se o daemon continua retransmitindo quando nenhum host está configurado (a política do próprio host conectado tem prioridade).
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```

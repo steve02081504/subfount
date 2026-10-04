@@ -101,7 +101,7 @@ Clonez ou téléchargez ce dépôt, puis exécutez le runner à la racine du dé
 .\run.bat
 ```
 
-Sans arguments, cela ouvre le panneau de configuration et démarre le démon en arrière-plan.
+Sans arguments, cela démarre le démon en arrière-plan avec redémarrage automatique. Ouvrez le panneau de configuration avec `subfount open` (ou ajoutez `open` après `run.sh`) pour configurer des hôtes.
 
 ## Utilisation
 
@@ -110,14 +110,14 @@ Les principaux points d'entrée sont les scripts runner (`run`, `run.bat`, `run.
 ### Panneau de configuration
 
 ```sh
-subfount open        # ou : run.sh (sans argument)
+subfount open        # ou : run.sh open
 ```
 
 Le panneau vous permet de :
 
 - Définir l'**ID de salle de l'hôte** et le **mot de passe** (laisser vide pour le mode infra seul)
 - Définir éventuellement le **nodeHash** de l'hôte (via l'API du code de connexion)
-- Activer/désactiver la **participation infra**
+- Activer/désactiver la **participation infra** (relayer tant qu'aucun hôte n'est configuré ; la politique propre à l'hôte connecté prime)
 - Consulter l'état du démon (PID, nodeHash, mode, hôte connecté)
 - **Démarrer** / **arrêter** le démon
 
@@ -126,7 +126,7 @@ Le panneau vous permet de :
 ```sh
 subfount                                    # infra seule (depuis data/config.json)
 subfount <host-room-id> <password> [node-hash]
-    # infra + nœud de travail hôte / assistance prioritaire (ponctuel, non persistant)
+    # infra + nœud de travail hôte / assistance prioritaire (ajoute un hôte persistant ; les autres hôtes restent connectés)
 ```
 
 ### Autres commandes
@@ -147,13 +147,13 @@ subfount <host-room-id> <password> [node-hash]
 
 ## Configuration
 
-Le démon lit `data/config.json`. Le panneau le modifie pour vous, et vous pouvez aussi le modifier manuellement pendant que le démon tourne (il est appliqué à la prochaine tentative de connexion).
+Le démon lit `data/config.json`. Le panneau le modifie pour vous, et vous pouvez aussi le modifier manuellement pendant que le démon tourne : le démon surveille le fichier et applique les changements en quelques secondes, sans redémarrage. Chaque entrée de `hosts` est une session d'hôte indépendante ; `infra` décide seulement si le démon continue à relayer lorsqu'aucun hôte n'est configuré (la politique propre à l'hôte connecté prime).
 
 ```json
 {
-	"hostRoomId": null,
-	"password": null,
-	"hostNodeHash": null,
+	"hosts": [
+		{ "hostRoomId": "<host-room-id>", "password": "<password>", "hostNodeHash": "<node-hash>" }
+	],
 	"infra": true
 }
 ```
