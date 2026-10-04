@@ -6,9 +6,9 @@
  * - 参与 fount 网络层 infra（overlay 转发 + mailbox）。
  * - 未设置主机：standalone infra。
  * - 设置主机后：一边跑 infra，一边从主机拉取信誉表并优先帮扶主机及其信任节点；
- *   同时接受主机下发的 run_code / shell_exec。
+ *   同时接受主机下发的 run_code / shell_exec。每个主机一个独立会话，互不影响。
  *
- * 连接配置来自 data/config.json（由 src/panel.mjs 编辑），可传命令行参数临时覆盖：
+ * 连接配置来自 data/config.json（由 src/panel.mjs 编辑），命令行参数会持久化追加一个主机：
  *   subfount <host-room-id> <password> [host-node-hash]
  *
  * 运行期间写入 data/daemon.pid（本进程 PID）与 data/status.json（供面板只读展示）。
@@ -21,11 +21,11 @@ import { setInterval, clearInterval, setTimeout } from 'node:timers'
 import { fileURLToPath } from 'node:url'
 
 import {
-	ensureConfigFile, getDataDir, loadConfig, writeDaemonPid, clearDaemonPid, writeStatus,
+	ensureConfigFile, getDataDir, loadConfig, writeDaemonPid, clearDaemonPid, writeStatus, configuredHosts, addConfiguredHost,
 } from './config.mjs'
 import { collectDeviceInfo, generateDeviceId } from './device.mjs'
 import { createRunCodeHandler, createShellExecHandler } from './handlers.mjs'
-import { createHostAssist, DEVICE_INFO_INTERVAL_MS, readInfraPolicy } from './host.mjs'
+import { createHostPool, DEVICE_INFO_INTERVAL_MS, readInfraPolicy } from './host.mjs'
 import { killProcessTree } from './process.mjs'
 
 /** 主机断开 / 认证失败后的重连延迟（毫秒）。 */
@@ -70,6 +70,21 @@ let on_shutdown
 /** @type {typeof import('npm:@steve02081504/fount-p2p')} */
 let p2p
 
+const args = process.argv.slice(2)
+
+if (args.length === 1 && ['--help', '-h'].includes(args[0])) {
+	console.log(`Usage:
+  subfount                                    infra only (from data/config.json)
+  subfount <host-room-id> <password> [node-hash]
+      infra + host worker / priority assist (adds or updates a persistent host (other hosts remain connected))
+`)
+	process.exit(0)
+}
+if (args.length === 1) {
+	console.error('Usage: subfount [<host-room-id> <password> [host-node-hash]]')
+	process.exit(2)
+}
+
 try {
 	; ({ on_shutdown } = await import('npm:on-shutdown'))
 	p2p = await import('npm:@steve02081504/fount-p2p')
@@ -84,135 +99,77 @@ catch (error) {
 	process.exit(1)
 }
 
-const args = process.argv.slice(2)
+/** 命令行传入的主机（一次启动有效，但按主机配置持久化）。 */
+if (args.length >= 2)
+	addConfiguredHost({ hostRoomId: args[0], password: args[1], hostNodeHash: args[2]?.trim() || null })
 
-/** 命令行临时覆盖（一次运行有效，不写入 config.json）。 */
-const argOverride = args.length >= 2
-	? { hostRoomId: args[0], password: args[1], hostNodeHash: args[2]?.trim() || null }
-	: null
-
-if (args.length === 1 && ['--help', '-h'].includes(args[0])) {
-	console.log(`Usage:
-  subfount                                    infra only (from data/config.json)
-  subfount <host-room-id> <password> [node-hash]
-      infra + host worker / priority assist (one-off, does not persist)
-`)
-	process.exit(0)
-}
-if (args.length === 1) {
-	console.error('Usage: subfount [<host-room-id> <password> [host-node-hash]]')
-	process.exit(2)
-}
-
-// --- 配置解析（命令行覆盖 > config.json > 默认）---
-/**
- * 解析运行配置（命令行覆盖优先于 config.json）。
- * @returns {object} 合并后的配置对象
- */
-function resolveConfig() {
-	const base = loadConfig()
-	return argOverride ? { ...base, ...argOverride } : base
-}
-
-let config = resolveConfig()
-
-const host = createHostAssist(p2p)
+let config = loadConfig()
+const sessions = new Map()
 const localNodeHash = p2p.getNodeHash()
-let deviceId = null
-let room = null
-let authenticated = false
-let deviceInfoUpdateInterval = null
-let configWatch = null
+const hostPool = createHostPool(p2p)
 let statusInterval = null
-/** @type {Record<string, Function>} */
-const actions = {}
+let configWatch = null
 
 /**
  * 推送运行状态到 data/status.json。
  */
 function pushStatus() {
+	const hosts = [...sessions.values()].map(session => session.status())
+	const connected = hosts.filter(host => host.authenticated).map(host => host.connectedHost)
 	writeStatus({
 		pid: process.pid,
 		nodeHash: localNodeHash,
-		deviceId,
-		mode: config.hostRoomId && config.password ? 'host' : 'infra',
-		hostRoomId: config.hostRoomId || null,
-		authenticated,
-		connectedHost: host.hostNodeHash,
+		hosts,
+		mode: hosts.length ? 'host' : 'infra',
+		authenticated: connected.length > 0,
+		connectedHost: connected.join(', ') || null,
 		infraRunning: p2p.isInfraRunning(),
 		updatedAt: new Date().toISOString(),
 	})
 }
 
 /**
- * 启动 infra 网络层。
+ * 为一个已配置的主机建立独立会话（连接、认证、收指令、定期上报设备信息）。
+ * @param {{hostRoomId: string, password: string, hostNodeHash: string|null}} hostConfig 该主机的配置
+ * @returns {object} 主机会话
  */
-async function startInfra() {
-	if (!p2p.isInfraRunning()) {
-		await p2p.startInfra({ logger: console })
-		console.log(`Infra running (nodeHash=${localNodeHash})`)
+function createHostSession(hostConfig) {
+	const config = hostConfig
+	const host = hostPool.create()
+	const retryTimers = new Set()
+	const actions = {}
+	let disposed = false
+	let deviceId = null
+	let room = null
+	let authenticated = false
+	let deviceInfoUpdateInterval = null
+
+	/**
+	 * 延后执行一次（用于重连），停止时自动丢弃。
+	 * @param {Function} fn 要执行的函数
+	 * @param {number} delay 延迟毫秒
+	 */
+	function later(fn, delay) {
+		const timer = setTimeout(() => { retryTimers.delete(timer); if (!disposed) void fn() }, delay)
+		retryTimers.add(timer)
 	}
-	pushStatus()
-}
 
-/**
- * 停止 infra 网络层。
- */
-async function stopInfra() {
-	if (p2p.isInfraRunning()) await p2p.stopInfra()
-	pushStatus()
-}
-
-/**
- * 采集并向主机上报设备信息。
- */
-async function sendDeviceInfoToHost() {
-	const info = await collectDeviceInfo()
-	if (actions.sendDeviceInfo && host.hostNodeHash && authenticated)
-		await actions.sendDeviceInfo(info, host.hostNodeHash)
-}
-
-const handleRunCode = createRunCodeHandler({ host, actions, sendDeviceInfoToHost })
-const handleShellExec = createShellExecHandler({ host, actions })
-
-/**
- * 通过 scope room 连接到主机。每次调用（含 5s 重试）都会重读配置，
- * 因此 config.json 的改动无需重启即可在下一次连接尝试生效。
- */
-async function connectViaP2P() {
-	config = resolveConfig()
-	if (!(config.hostRoomId && config.password)) {
-		// 配置已清空主机：转入纯 infra
-		if (!p2p.isInfraRunning()) await startInfra()
-		pushStatus()
-		return
+	/**
+	 * 采集并向主机上报设备信息。
+	 */
+	async function sendDeviceInfoToHost() {
+		const info = await collectDeviceInfo()
+		if (actions.sendDeviceInfo && host.hostNodeHash && authenticated)
+			await actions.sendDeviceInfo(info, host.hostNodeHash)
 	}
-	try {
-		console.log('Connecting to host...')
-		deviceId = await generateDeviceId()
-		pushStatus()
 
-		if (config.hostNodeHash) {
-			const { getLink, ensureLinkToNode } = await import('npm:@steve02081504/fount-p2p/transport/link_registry')
-			for (let attempt = 0; attempt < HOST_LINK_WARMUP_ATTEMPTS; attempt++) {
-				if (getLink(config.hostNodeHash)) break
-				void ensureLinkToNode(config.hostNodeHash).catch(() => { })
-				await new Promise(resolve => setTimeout(resolve, HOST_LINK_WARMUP_INTERVAL_MS))
-			}
-			if (!getLink(config.hostNodeHash))
-				console.warn('subfount: no link to host after warmup', config.hostNodeHash)
-		}
+	const handleRunCode = createRunCodeHandler({ host, actions, sendDeviceInfoToHost })
+	const handleShellExec = createShellExecHandler({ host, actions })
 
-		room = p2p.createGroupLinkSet({
-			groupId: `subfount:${config.hostRoomId}`,
-			scope: `subfount:${config.hostRoomId}`,
-			roomSecret: config.password,
-			members: config.hostNodeHash ? [config.hostNodeHash] : [],
-			dialAll: true,
-			autoconnect: true,
-		})
-		await room.start()
-
+	/**
+	 * 注册房间动作：认证、设备信息、infra 策略与主机指令。
+	 */
+	function wireRoomActions() {
 		const actionMap = {
 			authenticate: ['sendAuth', 'getAuth'],
 			device_info: ['sendDeviceInfo', 'getDeviceInfo'],
@@ -224,7 +181,6 @@ async function connectViaP2P() {
 			kill: [null, 'getKill'],
 			infra: [null, 'getInfra'],
 		}
-
 		for (const [name, [sendName, getName]] of Object.entries(actionMap)) {
 			const [send, get] = room.makeAction(name)
 			if (sendName) actions[sendName] = send
@@ -236,18 +192,18 @@ async function connectViaP2P() {
 			if (data.type === 'authenticated') {
 				authenticated = true
 				host.hostNodeHash = peerId
-				console.log('✓ Connected to host')
+				console.log(`✓ Connected to host ${config.hostRoomId}`)
 				void host.applyInfra(readInfraPolicy(data), authenticated)
 				void sendDeviceInfoToHost()
-				if (deviceInfoUpdateInterval) clearInterval(deviceInfoUpdateInterval)
+				clearInterval(deviceInfoUpdateInterval)
 				deviceInfoUpdateInterval = setInterval(sendDeviceInfoToHost, DEVICE_INFO_INTERVAL_MS).unref()
 				pushStatus()
 			}
 			else if (data.type === 'auth_error') {
-				console.log('✗ Authentication failed, retrying in 5 seconds...')
-				setTimeout(() => {
-					if (room) void room.leave()
-					setTimeout(connectViaP2P, AUTH_RETRY_DELAY_MS)
+				console.error(`✗ Authentication failed for ${config.hostRoomId}, retrying in ${RECONNECT_DELAY_MS / 1000} seconds...`)
+				later(() => {
+					room.leave()
+					later(connect, AUTH_RETRY_DELAY_MS)
 				}, RECONNECT_DELAY_MS)
 			}
 		})
@@ -263,62 +219,128 @@ async function connectViaP2P() {
 		 * @param {Function} handler 原始消息处理器
 		 * @returns {Function} 包装后的消息处理函数
 		 */
-		const handleAuthenticatedRequest = (handler) => (message, peerId) => {
+		const handleAuthenticatedRequest = handler => (message, peerId) => {
 			if (authenticated && peerId === host.hostNodeHash) handler(message, peerId)
 		}
 		actions.getRunCode(handleAuthenticatedRequest(handleRunCode))
 		actions.getShellExec(handleAuthenticatedRequest(handleShellExec))
-		actions.getKill(handleAuthenticatedRequest((message) => {
-			const pid = message.pid
+		actions.getKill(handleAuthenticatedRequest(({ pid }) => {
 			if (pid) killProcessTree(pid)
 		}))
 
 		room.onPeerJoin((peerId) => {
 			if (config.hostNodeHash && peerId !== config.hostNodeHash) return
-			if (!authenticated && actions.sendAuth && !host.hostNodeHash) {
-				console.log('Host discovered, sending authentication...')
+			if (!authenticated && !host.hostNodeHash) {
+				console.log(`Host ${config.hostRoomId} discovered, sending authentication...`)
 				host.hostNodeHash = peerId
 				actions.sendAuth({ password: config.password, deviceId }, peerId)
 			}
 		})
 
 		room.onPeerLeave((peerId) => {
-			if (peerId === host.hostNodeHash) {
-				console.log('✗ Disconnected from host (standalone infra default)')
-				authenticated = false
-				clearInterval(deviceInfoUpdateInterval)
-				deviceInfoUpdateInterval = null
-				void host.onHostDisconnected()
-				pushStatus()
-			}
+			if (peerId !== host.hostNodeHash) return
+			console.error(`✗ Disconnected from host ${config.hostRoomId} (standalone infra default)`)
+			authenticated = false
+			clearInterval(deviceInfoUpdateInterval)
+			deviceInfoUpdateInterval = null
+			void host.revokeHost()
+			pushStatus()
 		})
 	}
-	catch (error) {
-		console.error('Connection failed:', error.message)
-		console.log('Retrying in 5 seconds...')
-		setTimeout(connectViaP2P, RECONNECT_DELAY_MS)
+
+	/**
+	 * 连接到主机：预热链路、建房间、注册动作；失败则稍后重试。
+	 */
+	async function connect() {
+		if (disposed) return
+		try {
+			console.log(`Connecting to host ${config.hostRoomId}...`)
+			deviceId = await generateDeviceId()
+			pushStatus()
+
+			if (config.hostNodeHash) {
+				const { getLink, ensureLinkToNode } = await import('npm:@steve02081504/fount-p2p/transport/link_registry')
+				for (let attempt = 0; attempt < HOST_LINK_WARMUP_ATTEMPTS; attempt++) {
+					if (getLink(config.hostNodeHash)) break
+					void ensureLinkToNode(config.hostNodeHash).catch(() => { })
+					if (disposed) return
+					await new Promise(resolve => setTimeout(resolve, HOST_LINK_WARMUP_INTERVAL_MS))
+				}
+				if (!getLink(config.hostNodeHash))
+					console.warn(`subfount: no link to host ${config.hostNodeHash} after warmup`)
+			}
+
+			if (disposed) return
+			room = p2p.createGroupLinkSet({
+				groupId: `subfount:${config.hostRoomId}`,
+				scope: `subfount:${config.hostRoomId}`,
+				roomSecret: config.password,
+				members: config.hostNodeHash ? [config.hostNodeHash] : [],
+				dialAll: true,
+				autoconnect: true,
+			})
+			await room.start()
+			if (disposed) {
+				await room.leave()
+				return
+			}
+			wireRoomActions()
+		}
+		catch (error) {
+			console.error(`Connection to ${config.hostRoomId} failed:`, error.message)
+			console.log(`Retrying in ${RECONNECT_DELAY_MS / 1000} seconds...`)
+			later(connect, RECONNECT_DELAY_MS)
+		}
+	}
+
+	return {
+		config,
+		connect,
+		/**
+		 * 会话状态（供 status.json）。
+		 * @returns {object} 主机会话状态
+		 */
+		status: () => ({ hostRoomId: config.hostRoomId, authenticated, connectedHost: host.hostNodeHash }),
+		/**
+		 * 关闭会话：停止重连、退出房间、撤销帮扶。
+		 */
+		async close() {
+			disposed = true
+			for (const timer of retryTimers) clearTimeout(timer)
+			clearInterval(deviceInfoUpdateInterval)
+			if (room) await room.leave()
+			await host.close()
+		},
 	}
 }
 
-/** 配置热更新：主机模式 <-> infra 模式的切换实时生效。 */
-async function onConfigChanged() {
-	const next = resolveConfig()
-	const hadHost = Boolean(config.hostRoomId && config.password)
-	const hasHost = Boolean(next.hostRoomId && next.password)
-	config = next
-	if (hasHost && !hadHost) {
-		await stopInfra()
-		void connectViaP2P()
-	}
-	else if (!hasHost && hadHost) {
-		authenticated = false
-		host.hostNodeHash = null
-		clearInterval(deviceInfoUpdateInterval)
-		deviceInfoUpdateInterval = null
-		if (room) { void room.leave(); room = null }
-		await host.onHostDisconnected()
-	}
-	pushStatus()
+let reconcile = Promise.resolve()
+
+/**
+ * 让运行中的会话与 config.json 对齐：新增缺失的主机、重建配置变化的主机、关闭已删除的主机。
+ * @returns {Promise<void>} 对齐完成
+ */
+function onConfigChanged() {
+	reconcile = reconcile.then(async () => {
+		config = loadConfig()
+		const configured = configuredHosts(config)
+		hostPool.defaultInfra = readInfraPolicy(config)
+		for (const [hostRoomId, session] of sessions) {
+			const replacement = configured.find(host => host.hostRoomId === hostRoomId)
+			if (replacement && JSON.stringify(replacement) === JSON.stringify(session.config)) continue
+			sessions.delete(hostRoomId)
+			await session.close()
+		}
+		for (const host of configured) {
+			if (sessions.has(host.hostRoomId)) continue
+			const session = createHostSession(host)
+			sessions.set(host.hostRoomId, session)
+			void session.connect()
+		}
+		if (!sessions.size && !p2p.isInfraRunning() && hostPool.defaultInfra) await p2p.startInfra({ logger: console })
+		pushStatus()
+	}).catch(error => console.error('Configuration update failed:', error))
+	return reconcile
 }
 
 /**
@@ -344,11 +366,10 @@ async function shutdown() {
 	if (shuttingDown) return
 	shuttingDown = true
 	console.log('\nShutting down...')
-	clearInterval(deviceInfoUpdateInterval)
 	clearInterval(statusInterval)
 	try { configWatch?.close() } catch { /* ignore */ }
 	clearDaemonPid()
-	if (room) await room.leave()
+	await Promise.all([...sessions.values()].map(session => session.close()))
 	if (p2p.isInfraRunning()) await p2p.stopInfra()
 }
 
@@ -367,9 +388,8 @@ function startStopWatcher() {
 	const stopFile = path.join(getDataDir(), 'stop.request')
 	try {
 		fs.watch(getDataDir(), (_event, filename) => {
-			if (filename === 'stop.request' && fs.existsSync(stopFile)) 
+			if (filename === 'stop.request' && fs.existsSync(stopFile))
 				void gracefulStop()
-			
 		})
 	}
 	catch { /* ignore */ }
@@ -383,11 +403,6 @@ startStopWatcher()
 
 statusInterval = setInterval(pushStatus, STATUS_INTERVAL_MS).unref()
 
-if (config.hostRoomId && config.password)
-	await connectViaP2P()
-else {
-	await startInfra()
-	console.log('No host configured — infra overlay/mailbox only')
-}
+await onConfigChanged()
 
 on_shutdown(shutdown)
