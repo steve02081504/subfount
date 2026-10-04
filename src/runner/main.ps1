@@ -308,7 +308,12 @@ try {
 		Import-SubfountLocale $Script:subfountDir
 	}
 
-	try { Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force -ErrorAction Ignore }
+	try {
+		$subfCurrentPolicy = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell' -Name ExecutionPolicy -ErrorAction Ignore).ExecutionPolicy
+		if ($subfCurrentPolicy -ne 'Unrestricted') {
+			Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force -ErrorAction Ignore
+		}
+	}
 	catch { <# ignore #> }
 
 	#_if PSEXE
