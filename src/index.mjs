@@ -296,11 +296,17 @@ function createHostSession(hostConfig) {
 
 		room.onPeerLeave((peerId) => {
 			if (peerId !== host.hostNodeHash) return
+			callbackSessions.disconnect(peerId)
 			console.error(`✗ Disconnected from host ${config.hostRoomId} (standalone infra default)`)
 			authenticated = false
 			clearInterval(deviceInfoUpdateInterval)
 			deviceInfoUpdateInterval = null
-			void host.revokeHost()
+			// 撤销帮扶会清空 hostNodeHash 并等待信誉锁释放；主机在这段窗口内重连时 onPeerJoin 看到
+			// hostNodeHash 已空就跳过认证，帮扶会空到下次重连。因此撤销后确认主机仍在房间就自己补发认证
+			// （authenticated 说明已由别的路径认证完成；房间查成员同时排除了已停机与已换房间的会话）。
+			void host.revokeHost().then(() => {
+				if (!authenticated && room.getPeers()[peerId]) return actions.sendAuth({ password: config.password, deviceId }, peerId)
+			}).catch(error => console.error('Host reconnect:', error))
 			pushStatus()
 		})
 	}
