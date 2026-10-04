@@ -39,7 +39,8 @@ export SUBFOUNT_INSTALLED_PACMAN_PACKAGES_FILE="$SUBFOUNT_INSTALLER_DATA_DIR/aut
 export SUBFOUNT_AUTO_INSTALLED_DENO_FLAG="$SUBFOUNT_INSTALLER_DATA_DIR/auto_installed_deno"
 
 # Best-effort Clash TUN enablement for users in restricted regions
-if echo "${LANG:-}" | grep -iqE "_(CN|KP|RU)|(^|-)(zh|ko|ru)(-|$)"; then
+enable_clash_tun_background() {
+	echo "${LANG:-}" | grep -iqE "_(CN|KP|RU)|(^|-)(zh|ko|ru)(-|$)" || return 0
 	(
 		TARGETS="github.com cdn.jsdelivr.net"
 		for host in $TARGETS; do
@@ -54,4 +55,4 @@ if echo "${LANG:-}" | grep -iqE "_(CN|KP|RU)|(^|-)(zh|ko|ru)(-|$)"; then
 			fi
 		done
 	) >/dev/null 2>&1 &
-fi
+}

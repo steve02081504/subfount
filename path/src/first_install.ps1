@@ -1,5 +1,7 @@
 ﻿function script:subfount_first_install_if_needed {
 	if (!(Test-Path -Path "$SUBFOUNT_DIR/node_modules") -or $args[0] -eq 'init') {
+		require_mid
+		Enable-SubfClashTunBackground
 		Get-ChildItem -Path $SUBFOUNT_DIR -Recurse -File -Filter '*.ps1' -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue
 		if (Test-Path -Path "$SUBFOUNT_DIR/node_modules") {
 			run shutdown

@@ -3,6 +3,7 @@
 
 subfount_first_install_if_needed() {
 	if [[ ! -d "$SUBFOUNT_DIR/node_modules" || "${1:-}" = 'init' ]]; then
+		enable_clash_tun_background
 		if [ ! -f "$SUBFOUNT_DIR/.noupdate" ]; then
 			install_package "git" "git git-core" || true
 		fi
